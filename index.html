@@ -10,34 +10,40 @@
 
     <style>
         body { font-family: 'Lato', sans-serif; display: flex; margin: 0; height: 100vh; background-color: #f0f2f5; overflow: hidden; }
-        #leyenda { width: 360px; min-width: 360px; height: 100vh; padding: 20px; background: #ffffff; box-shadow: 2px 0 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; }
-        #leyenda h2 { color: #2c3e50; font-family: 'Playfair Display', serif; font-size: 24px; margin: 0 0 5px 0; }
+        
+        /* Panel Lateral (Tamaño normal) */
+        #leyenda { width: 380px; min-width: 380px; height: 100vh; padding: 25px; background: #ffffff; box-shadow: 2px 0 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; }
+        #leyenda h2 { color: #2c3e50; font-family: 'Playfair Display', serif; font-size: 26px; margin: 0 0 5px 0; }
         .eslogan { font-size: 16px; color: #2c3e50; opacity: 0.7; font-family: 'Playfair Display', serif; margin-bottom: 20px; }
-        .caja-tip { border-left: 3px solid #ccc; padding: 5px 0 5px 10px; font-size: 12px; color: #7f8c8d; font-style: italic; line-height: 1.4; margin-bottom: 20px; }
-        hr { margin: 0 0 20px 0 !important; border: 0; border-top: 1px solid #eee; }
-        details { background: #fff; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ddd; overflow: hidden; }
-        summary { padding: 15px; cursor: pointer; list-style: none; font-weight: 700; color: white; display: flex; align-items: center; justify-content: space-between; }
+        .caja-tip { border-left: 3px solid #ccc; padding: 8px 15px; font-size: 13px; color: #7f8c8d; font-style: italic; line-height: 1.5; margin-bottom: 20px; background: #f9f9f9; }
+        hr { margin: 0 0 20px 0; border: 0; border-top: 1px solid #eee; }
+        details { background: #fff; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ddd; }
+        summary { padding: 15px; cursor: pointer; list-style: none; font-weight: 700; color: white; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; }
         .bloque-raices summary { background-color: #1a5276; }
         .bloque-manos summary { background-color: #1e8449; }
         .bloque-sabores summary { background-color: #d35400; }
         .bloque-fiestas summary { background-color: #c70039; }
-        .contenido-bloque { padding: 10px; }
-        .item-leyenda { display: flex; align-items: center; padding: 8px; font-size: 14px; color: #333; cursor: pointer; }
-        .circulo { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
+        .contenido-bloque { padding: 15px; }
+        .item-leyenda { display: flex; align-items: center; padding: 10px 0; font-size: 15px; color: #333; cursor: pointer; }
+        .circulo { width: 14px; height: 14px; border-radius: 50%; margin-right: 12px; }
         #mapa { flex-grow: 1; height: 100%; z-index: 1; }
 
         /* Modal oscuro */
-        #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; border-radius: 15px; padding: 25px; position: relative; }
-        .btn-cerrar { background: #c70039; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 15px; }
+        #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-contenido { background: white; width: 85%; max-width: 600px; max-height: 85vh; overflow-y: auto; border-radius: 20px; padding: 30px; position: relative; }
+        .btn-cerrar { background: #c70039; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 20px; font-size: 16px; }
         
-        #form-container { display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:white; padding:25px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:9999; width: 320px; }
-        #form-container input, #form-container select { width: 100%; margin-bottom: 15px; padding: 10px; box-sizing: border-box; }
+        /* Formulario con tamaño amplio */
+        #form-container { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.4); z-index:9999; width: 400px; }
+        #form-container h3 { margin-top:0; color:#1a5276; }
+        #form-container input, #form-container select { width: 100%; margin-bottom: 20px; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+        #form-container button { padding: 12px; font-size: 15px; font-weight: bold; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            #leyenda { width: 100%; height: 35vh; }
-            #mapa { height: 65vh; }
+            #leyenda { width: 100%; height: 40vh; min-width: 100%; }
+            #mapa { height: 60vh; }
+            #form-container { width: 90%; }
         }
     </style>
 </head>
@@ -78,19 +84,12 @@
         <h3>Registrar nuevo lugar</h3>
         <input type="text" name="Nombre" id="nombre-lugar" placeholder="Nombre del lugar" required>
         <select name="Categoria" id="categoria-lugar">
-            <option value="iglesias">Iglesias</option>
-            <option value="templos">Templos</option>
-            <option value="sitios">Sitios arqueológicos</option>
-            <option value="museos">Museos</option>
-            <option value="talleres">Talleres artesanales</option>
-            <option value="trajes">Confección de trajes típicos</option>
-            <option value="panaderias">Panaderías</option>
-            <option value="fondas">Fondas</option>
-            <option value="fiestas">Fiestas</option>
-            <option value="mitos">Mitos</option>
+            <option value="iglesias">Iglesias</option><option value="templos">Templos</option><option value="sitios">Sitios arqueológicos</option>
+            <option value="museos">Museos</option><option value="talleres">Talleres artesanales</option><option value="trajes">Confección de trajes típicos</option>
+            <option value="panaderias">Panaderías</option><option value="fondas">Fondas</option><option value="fiestas">Fiestas</option><option value="mitos">Mitos</option>
         </select>
-        <button type="submit" onclick="confirmarYGuardar()" style="background:#1a5276; color:white; border:none; padding:10px; width:100%; cursor:pointer;">Enviar</button>
-        <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="margin-top:5px; width:100%; cursor:pointer;">Cancelar</button>
+        <button type="submit" style="background:#1a5276; color:white; border:none; width:100%; cursor:pointer;">Enviar</button>
+        <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="margin-top:10px; width:100%; cursor:pointer;">Cancelar</button>
     </form>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -104,21 +103,16 @@
             panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map)
         };
 
-        let latE, lngE;
         map.on('click', (e) => {
-            latE = e.latlng.lat;
-            lngE = e.latlng.lng;
             document.getElementById('form-container').style.display = 'block';
         });
 
         function agregarPunto(lat, lng, color, titulo, img, texto, cat) {
             const icono = L.divIcon({ html: `<div style="background-color:${color}; width:16px; height:16px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [16, 16] });
             const marker = L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]);
-            
             marker.on('click', () => {
                 const modal = document.getElementById('modal-detalle');
-                const contenido = document.getElementById('modal-contenido-interno');
-                contenido.innerHTML = `
+                document.getElementById('modal-contenido-interno').innerHTML = `
                     <img src="${img}" style="width:100%; border-radius:10px;">
                     <h2 style="color:#1a5276;">${titulo}</h2>
                     <p style="text-align:justify;">${texto}</p>
@@ -128,7 +122,7 @@
             });
         }
 
-        agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
+        agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año.', 'fiestas');
 
         function filtrar() {
             document.querySelectorAll('.filtro').forEach(c => {
