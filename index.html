@@ -77,9 +77,11 @@
 
 <div id="modal-detalle"><div class="modal-contenido" id="modal-contenido-interno"></div></div>
 
-<form id="form-container" action="https://formsubmit.co/1089a8264906f363c401344421b47167" method="POST">
-    <h3>Registrar nuevo lugar</h3>
-    <input type="text" name="Nombre" placeholder="Nombre del lugar" required>
+<form id="form-container" action="https://formsubmit.co/1089a8264906f363c401344421b47167" method="POST" enctype="multipart/form-data">
+    <h3 style="margin-top:0;">Registrar nuevo lugar</h3>
+    
+    <input type="text" name="Titulo" placeholder="Título del lugar" required>
+    <input type="text" name="Ubicacion" placeholder="Coordenadas (Lat, Long)" required>
     <select name="Categoria">
         <option value="iglesias">Iglesias</option><option value="templos">Templos</option>
         <option value="sitios">Sitios arqueológicos</option><option value="museos">Museos</option>
@@ -87,8 +89,13 @@
         <option value="panaderias">Panaderías</option><option value="fondas">Fondas</option>
         <option value="fiestas">Fiestas</option><option value="mitos">Mitos</option>
     </select>
-    <button type="submit" style="background:#1a5276; color:white; border:none; width:100%; padding:12px; cursor:pointer; font-weight:bold;">Enviar</button>
-    <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="width:100%; padding:10px; margin-top:10px; cursor:pointer;">Cancelar</button>
+    <textarea name="Descripcion" placeholder="Escribe la descripción aquí..." rows="4" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:5px; box-sizing:border-box;" required></textarea>
+    
+    <label style="font-size:12px;">Sube una foto del lugar:</label>
+    <input type="file" name="attachment" accept="image/*" required>
+
+    <button type="submit" style="background:#1a5276; color:white; border:none; width:100%; padding:12px; cursor:pointer; font-weight:bold;">Enviar registro</button>
+    <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="width:100%; padding:10px; margin-top:5px; cursor:pointer;">Cancelar</button>
 </form>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -112,6 +119,8 @@
     }
 
     agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
+   
+    agregarPunto(9.244730166964654, -79.67262371259666, '#1a5276', 'Parroquia San Juan Bautista.', 'https://i.postimg.cc/x8x9sMsS/f0f88afb-831e-40f1-9d11-3ed673d6dfbb.png', 'DESCRIPCIÓN', 'Iglesias');
 
     map.on('click', () => { document.getElementById('form-container').style.display = 'block'; });
 
