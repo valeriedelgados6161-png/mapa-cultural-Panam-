@@ -7,13 +7,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <style>
         body { font-family: 'Lato', sans-serif; display: flex; margin: 0; height: 100vh; background-color: #f0f2f5; overflow: hidden; }
         #leyenda { width: 360px; min-width: 360px; height: 100vh; padding: 20px; background: #ffffff; box-shadow: 2px 0 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; }
         #mapa { flex-grow: 1; height: 100%; z-index: 1; }
-        
-        /* Estilos de las categorías */
         details { background: #fff; border-radius: 8px; margin-bottom: 10px; border: 1px solid #ddd; }
         summary { padding: 15px; cursor: pointer; list-style: none; font-weight: 700; color: white; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; }
         .bloque-raices summary { background-color: #1a5276; }
@@ -21,13 +18,12 @@
         .bloque-sabores summary { background-color: #d35400; }
         .bloque-fiestas summary { background-color: #c70039; }
         .contenido-bloque { padding: 15px; background: #f9f9f9; border-top: 1px solid #eee; }
-        
-        /* Ajuste móvil */
+        #form-container { display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:white; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:2000; width: 300px; }
+        #form-container input, #form-container select { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
         @media (max-width: 768px) {
             body { flex-direction: column; overflow-y: auto; }
-            #leyenda { width: 100%; min-width: 100%; height: auto; max-height: 60vh; overflow-y: auto; }
-            #mapa { height: 40vh; }
-            .custom-card { width: 220px !important; }
+            #leyenda { width: 100%; min-width: 100%; height: auto; max-height: 50vh; }
+            #mapa { height: 50vh; }
         }
     </style>
 </head>
@@ -35,48 +31,49 @@
 
     <div id="leyenda">
         <h2>Mapa Cultural de Panamá</h2>
-        <p>Nuestras raíces a un toque de distancia.</p>
-        
+        <p>💡 Tip: Presiona el mapa para sugerir un lugar.</p>
         <details class="bloque-raices"><summary>Historia y Raíces <span>▼</span></summary><div class="contenido-bloque">
             <label><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> Iglesias</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="templos" checked onchange="filtrar()"> Templos</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="sitios" checked onchange="filtrar()"> Sitios arqueológicos</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="museos" checked onchange="filtrar()"> Museos</label>
+            <label><input type="checkbox" class="filtro" data-cat="templos" checked onchange="filtrar()"> Templos</label>
         </div></details>
-        
-        <details class="bloque-manos"><summary>Manos Creadoras <span>▼</span></summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> Talleres artesanales</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="trajes" checked onchange="filtrar()"> Confección de trajes típicos</label>
-        </div></details>
-
-        <details class="bloque-sabores"><summary>Sabores <span>▼</span></summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="panaderias" checked onchange="filtrar()"> Panaderías</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="fondas" checked onchange="filtrar()"> Fondas</label>
-        </div></details>
-
         <details class="bloque-fiestas"><summary>Fiestas <span>▼</span></summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Fiestas</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="mitos" checked onchange="filtrar()"> Mitos</label>
+            <label><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Fiestas</label>
         </div></details>
     </div>
 
     <div id="mapa"></div>
 
+    <form id="form-container" action="https://formsubmit.co/valery.delgado@tp.ac.pa" method="POST">
+        <h3>Registrar nuevo lugar</h3>
+        <input type="text" name="Nombre" id="nombre-lugar" placeholder="Nombre del lugar" required>
+        <select name="Categoria" id="categoria-lugar">
+            <option value="iglesias">Iglesias</option><option value="fiestas">Fiestas</option>
+        </select>
+        <button type="submit" onclick="confirmarYGuardar()" style="background:#1a5276; color:white; width:100%; padding:10px;">Enviar</button>
+        <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="margin-top:5px; width:100%;">Cancelar</button>
+    </form>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const map = L.map('mapa').setView([8.5380, -80.7821], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
-        // ... (Tu código de grupos y agregarPunto se mantiene igual)
-        const grupos = {
-            iglesias: L.layerGroup().addTo(map), templos: L.layerGroup().addTo(map), sitios: L.layerGroup().addTo(map),
-            museos: L.layerGroup().addTo(map), talleres: L.layerGroup().addTo(map), trajes: L.layerGroup().addTo(map),
-            panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map)
-        };
+
+        const grupos = { iglesias: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map) };
+        let latE, lngE;
+
+        map.on('click', (e) => {
+            latE = e.latlng.lat;
+            lngE = e.latlng.lng;
+            document.getElementById('form-container').style.display = 'block';
+        });
+
         function agregarPunto(lat, lng, color, titulo, img, texto, cat) {
             const icono = L.divIcon({ html: `<div style="background-color:${color}; width:16px; height:16px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [16, 16] });
             L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]).bindPopup(`<div style="width:200px"><img src="${img}" style="width:100%"><h3 style="color:#1a5276">${titulo}</h3><p style="font-size:12px">${texto}</p></div>`);
         }
-        agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones.', 'fiestas');
+
+        agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año.', 'fiestas');
+
         function filtrar() { document.querySelectorAll('.filtro').forEach(c => { const g = grupos[c.dataset.cat]; if (g) { c.checked ? map.addLayer(g) : map.removeLayer(g); } }); }
     </script>
 </body>
