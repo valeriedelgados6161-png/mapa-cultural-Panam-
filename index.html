@@ -26,12 +26,14 @@
         .circulo { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
         #mapa { flex-grow: 1; height: 100%; z-index: 1; }
 
-        /* Modal estilo pantalla completa */
+        /* Modal oscuro */
         #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; border-radius: 15px; padding: 20px; position: relative; }
-        .btn-cerrar { background: #c70039; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: block; margin: 20px auto 0; }
+        .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; border-radius: 15px; padding: 25px; position: relative; }
+        .btn-cerrar { background: #c70039; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 15px; }
         
-        #form-container { display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:white; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:9999; width: 90%; max-width: 400px; }
+        /* Formulario reparado */
+        #form-container { display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:white; padding:25px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:9999; width: 320px; }
+        #form-container input, #form-container select { width: 100%; margin-bottom: 15px; padding: 10px; box-sizing: border-box; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
@@ -113,8 +115,8 @@
                 const contenido = document.getElementById('modal-contenido-interno');
                 contenido.innerHTML = `
                     <img src="${img}" style="width:100%; border-radius:10px;">
-                    <h2>${titulo}</h2>
-                    <p>${texto}</p>
+                    <h2 style="color:#1a5276;">${titulo}</h2>
+                    <p style="text-align:justify;">${texto}</p>
                     <button class="btn-cerrar" onclick="document.getElementById('modal-detalle').style.display='none'">Cerrar</button>
                 `;
                 modal.style.display = 'flex';
