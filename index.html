@@ -2,135 +2,78 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mapa Cultural de Panamá</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        body { font-family: 'Lato', sans-serif; display: flex; margin: 0; height: 100vh; background-color: #f0f2f5; overflow: hidden; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'Lato', sans-serif; overflow: hidden; }
         
-        /* Panel Lateral (Tamaño normal) */
-        #leyenda { width: 380px; min-width: 380px; height: 100vh; padding: 25px; background: #ffffff; box-shadow: 2px 0 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; }
-        #leyenda h2 { color: #2c3e50; font-family: 'Playfair Display', serif; font-size: 26px; margin: 0 0 5px 0; }
-        .eslogan { font-size: 16px; color: #2c3e50; opacity: 0.7; font-family: 'Playfair Display', serif; margin-bottom: 20px; }
-        .caja-tip { border-left: 3px solid #ccc; padding: 8px 15px; font-size: 13px; color: #7f8c8d; font-style: italic; line-height: 1.5; margin-bottom: 20px; background: #f9f9f9; }
-        hr { margin: 0 0 20px 0; border: 0; border-top: 1px solid #eee; }
-        details { background: #fff; border-radius: 8px; margin-bottom: 15px; border: 1px solid #ddd; }
-        summary { padding: 15px; cursor: pointer; list-style: none; font-weight: 700; color: white; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; }
+        #contenedor-principal { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+
+        /* Panel superior de categorías */
+        #leyenda { width: 100%; background: #ffffff; padding: 15px; box-sizing: border-box; overflow-y: auto; flex-shrink: 0; max-height: 50vh; }
+        
+        /* Mapa ocupa el resto del espacio */
+        #mapa { flex-grow: 1; width: 100%; }
+
+        /* Categorías - Ajuste para que no sean diminutas */
+        details { background: #fff; border-radius: 10px; margin-bottom: 8px; border: 1px solid #ccc; }
+        summary { padding: 15px 20px; cursor: pointer; list-style: none; font-weight: 700; color: white; display: flex; align-items: center; justify-content: space-between; font-size: 16px; border-radius: 10px; }
+        
         .bloque-raices summary { background-color: #1a5276; }
         .bloque-manos summary { background-color: #1e8449; }
         .bloque-sabores summary { background-color: #d35400; }
         .bloque-fiestas summary { background-color: #c70039; }
-        .contenido-bloque { padding: 15px; }
-        .item-leyenda { display: flex; align-items: center; padding: 10px 0; font-size: 15px; color: #333; cursor: pointer; }
-        .circulo { width: 14px; height: 14px; border-radius: 50%; margin-right: 12px; }
-        #mapa { flex-grow: 1; height: 100%; z-index: 1; }
 
-        /* Modal oscuro */
-        #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-contenido { background: white; width: 85%; max-width: 600px; max-height: 85vh; overflow-y: auto; border-radius: 20px; padding: 30px; position: relative; }
-        .btn-cerrar { background: #c70039; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 20px; font-size: 16px; }
-        
-        /* Formulario con tamaño amplio */
-        #form-container { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:30px; border-radius:15px; box-shadow:0 10px 30px rgba(0,0,0,0.4); z-index:9999; width: 400px; }
-        #form-container h3 { margin-top:0; color:#1a5276; }
-        #form-container input, #form-container select { width: 100%; margin-bottom: 20px; padding: 12px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
-        #form-container button { padding: 12px; font-size: 15px; font-weight: bold; }
+        .contenido-bloque { padding: 10px 20px; }
+        .item-leyenda { display: flex; align-items: center; padding: 8px 0; font-size: 15px; }
 
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            #leyenda { width: 100%; height: 40vh; min-width: 100%; }
-            #mapa { height: 60vh; }
-            #form-container { width: 90%; }
-        }
+        /* Formulario */
+        #form-container { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border-radius:15px; box-shadow:0 5px 15px rgba(0,0,0,0.3); z-index:9999; width: 90%; max-width: 400px; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-    <div id="leyenda">
-        <h2>Mapa Cultural de Panamá</h2>
-        <div class="eslogan">Nuestras raíces a un toque de distancia.</div>
-        <div class="caja-tip">💡 <b>Tip:</b> Presiona cualquier lugar del mapa para registrar un nuevo punto.</div>
-        <hr>
-        <details class="bloque-raices" open><summary><i class="fas fa-landmark"></i> Historia y Raíces <span>▼</span></summary><div class="contenido-bloque">
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Iglesias</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="templos" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Templos</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="sitios" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Sitios arqueológicos</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="museos" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Museos</label>
-        </div></details>
-        <details class="bloque-manos"><summary><i class="fas fa-palette"></i> Manos Creadoras <span>▼</span></summary><div class="contenido-bloque">
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> Talleres artesanales</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="trajes" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> Confección de trajes típicos</label>
-        </div></details>
-        <details class="bloque-sabores"><summary><i class="fas fa-utensils"></i> Sabores <span>▼</span></summary><div class="contenido-bloque">
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="panaderias" checked onchange="filtrar()"> <div class="circulo" style="background:#d35400"></div> Panaderías</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fondas" checked onchange="filtrar()"> <div class="circulo" style="background:#d35400"></div> Fondas</label>
-        </div></details>
-        <details class="bloque-fiestas"><summary><i class="fas fa-music"></i> Fiestas <span>▼</span></summary><div class="contenido-bloque">
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> <div class="circulo" style="background:#c70039"></div> Fiestas</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="mitos" checked onchange="filtrar()"> <div class="circulo" style="background:#c70039"></div> Mitos</label>
-        </div></details>
+    <div id="contenedor-principal">
+        <div id="leyenda">
+            <h2 style="margin:0 0 5px 0;">Mapa Cultural</h2>
+            <div style="font-size: 14px; margin-bottom: 15px;">Nuestras raíces a un toque.</div>
+            
+            <details class="bloque-raices"><summary><i class="fas fa-landmark"></i> Historia y Raíces <span>▼</span></summary><div class="contenido-bloque">
+                <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="iglesias" checked> Iglesias</label>
+                <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="templos" checked> Templos</label>
+            </div></details>
+            <details class="bloque-manos"><summary><i class="fas fa-palette"></i> Manos Creadoras <span>▼</span></summary><div class="contenido-bloque">
+                <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="talleres" checked> Talleres artesanales</label>
+            </div></details>
+            <!-- Agrega aquí tus otras categorías siguiendo este mismo formato -->
+        </div>
+
+        <div id="mapa"></div>
     </div>
 
-    <div id="mapa"></div>
-
-    <div id="modal-detalle">
-        <div class="modal-contenido" id="modal-contenido-interno"></div>
-    </div>
-
-<!-- CAMBIO: Se reemplazó el correo por el código de activación proporcionado -->
-<form id="form-container" action="https://formsubmit.co/b8fbb405a3bce986fe67732366390e27" method="POST">
-    <h3>Registrar nuevo lugar</h3>
-    <input type="text" name="Nombre" id="nombre-lugar" placeholder="Nombre del lugar" required>
-    <select name="Categoria" id="categoria-lugar">
-        <option value="iglesias">Iglesias</option><option value="templos">Templos</option><option value="sitios">Sitios arqueológicos</option>
-        <option value="museos">Museos</option><option value="talleres">Talleres artesanales</option><option value="trajes">Confección de trajes típicos</option>
-        <option value="panaderias">Panaderías</option><option value="fondas">Fondas</option><option value="fiestas">Fiestas</option><option value="mitos">Mitos</option>
-    </select>
-    <button type="submit" style="background:#1a5276; color:white; border:none; width:100%; cursor:pointer;">Enviar</button>
-    <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="margin-top:10px; width:100%; cursor:pointer;">Cancelar</button>
-</form>
+    <form id="form-container" action="https://formsubmit.co/valerie.delgado@utp.ac.pa" method="POST">
+        <h3>Registrar punto</h3>
+        <input type="text" name="Nombre" placeholder="Nombre" required>
+        <select name="Categoria">
+            <option value="iglesias">Iglesias</option>
+            <option value="templos">Templos</option>
+            <option value="sitios">Sitios arqueológicos</option>
+            <option value="museos">Museos</option>
+        </select>
+        <button type="submit" style="width:100%; padding:10px;">Enviar</button>
+        <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="width:100%; padding:10px; margin-top:5px;">Cancelar</button>
+    </form>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const map = L.map('mapa').setView([8.5380, -80.7821], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
-
-        const grupos = {
-            iglesias: L.layerGroup().addTo(map), templos: L.layerGroup().addTo(map), sitios: L.layerGroup().addTo(map),
-            museos: L.layerGroup().addTo(map), talleres: L.layerGroup().addTo(map), trajes: L.layerGroup().addTo(map),
-            panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map)
-        };
-
-        map.on('click', (e) => {
-            document.getElementById('form-container').style.display = 'block';
-        });
-
-        function agregarPunto(lat, lng, color, titulo, img, texto, cat) {
-            const icono = L.divIcon({ html: `<div style="background-color:${color}; width:16px; height:16px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [16, 16] });
-            const marker = L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]);
-            marker.on('click', () => {
-                const modal = document.getElementById('modal-detalle');
-                document.getElementById('modal-contenido-interno').innerHTML = `
-                    <img src="${img}" style="width:100%; border-radius:10px;">
-                    <h2 style="color:#1a5276;">${titulo}</h2>
-                    <p style="text-align:justify;">${texto}</p>
-                    <button class="btn-cerrar" onclick="document.getElementById('modal-detalle').style.display='none'">Cerrar</button>
-                `;
-                modal.style.display = 'flex';
-            });
-        }
-
-        agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
-
-        function filtrar() {
-            document.querySelectorAll('.filtro').forEach(c => {
-                const g = grupos[c.dataset.cat];
-                if (g) { c.checked ? map.addLayer(g) : map.removeLayer(g); }
-            });
-        }
+        map.on('click', () => { document.getElementById('form-container').style.display = 'block'; });
     </script>
 </body>
 </html>
