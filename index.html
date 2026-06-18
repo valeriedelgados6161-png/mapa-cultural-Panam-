@@ -1,3 +1,8 @@
+Entiendo perfectamente. Lo que sucede es que el `label` está intentando abarcar demasiado o el `padding` está empujando el texto. Para que el texto quede justo al lado del círculo y del checkbox, vamos a usar una estructura de **flexbox** fija que no permite que se separen.
+
+He ajustado el CSS de `.item-leyenda` para que sea **estricto**: `gap` pequeño, alineación central vertical y sin espacios extra. Aquí tienes el código con este ajuste preciso:
+
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -25,9 +30,19 @@
 
         .contenido-bloque { padding: 5px 15px; }
         
-        /* CORRECCIÓN FINAL: Alineación compacta y directa */
-        .item-leyenda { display: flex; align-items: center; padding: 10px 0; font-size: 14px; color: #333; cursor: pointer; gap: 10px; }
+        /* AJUSTE ESTRICTO: Alineación compacta para que el texto siga al checkbox */
+        .item-leyenda { 
+            display: flex; 
+            align-items: center; 
+            padding: 8px 0; 
+            font-size: 14px; 
+            color: #333; 
+            cursor: pointer; 
+            gap: 8px; /* Controla la distancia exacta entre elementos */
+            justify-content: flex-start; /* Fuerza a que todo se pegue a la izquierda */
+        }
         .circulo { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        input[type="checkbox"] { margin: 0; flex-shrink: 0; }
 
         #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; }
         .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; padding: 20px; border-radius: 15px; }
@@ -117,3 +132,7 @@
 </script>
 </body>
 </html>
+
+```
+
+¿Sientes que el texto ya está lo suficientemente pegado al checkbox ahora?
