@@ -1,8 +1,3 @@
-Entiendo perfectamente. Lo que sucede es que el `label` está intentando abarcar demasiado o el `padding` está empujando el texto. Para que el texto quede justo al lado del círculo y del checkbox, vamos a usar una estructura de **flexbox** fija que no permite que se separen.
-
-He ajustado el CSS de `.item-leyenda` para que sea **estricto**: `gap` pequeño, alineación central vertical y sin espacios extra. Aquí tienes el código con este ajuste preciso:
-
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,11 +5,8 @@ He ajustado el CSS de `.item-leyenda` para que sea **estricto**: `gap` pequeño,
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mapa Cultural de Panamá</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: 'Lato', sans-serif; overflow: hidden; }
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; font-family: sans-serif; overflow: hidden; }
         #contenedor-principal { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
         
         #leyenda { width: 100%; background: #ffffff; padding: 10px; box-sizing: border-box; overflow-y: auto; flex-shrink: 0; max-height: 50vh; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 1000; }
@@ -30,19 +22,19 @@ He ajustado el CSS de `.item-leyenda` para que sea **estricto**: `gap` pequeño,
 
         .contenido-bloque { padding: 5px 15px; }
         
-        /* AJUSTE ESTRICTO: Alineación compacta para que el texto siga al checkbox */
+        /* CORRECCIÓN DEFINITIVA: Estructura fija para alinear todo */
         .item-leyenda { 
             display: flex; 
             align-items: center; 
-            padding: 8px 0; 
+            padding: 10px 0; 
             font-size: 14px; 
             color: #333; 
             cursor: pointer; 
-            gap: 8px; /* Controla la distancia exacta entre elementos */
-            justify-content: flex-start; /* Fuerza a que todo se pegue a la izquierda */
+            width: 100%;
         }
-        .circulo { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-        input[type="checkbox"] { margin: 0; flex-shrink: 0; }
+        .item-leyenda input { margin-right: 10px; }
+        .circulo { width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+        .texto-item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; }
         .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; padding: 20px; border-radius: 15px; }
@@ -58,25 +50,25 @@ He ajustado el CSS de `.item-leyenda` para que sea **estricto**: `gap` pequeño,
         <h2 style="margin:0 0 10px 0; font-size: 18px;">Mapa Cultural de Panamá</h2>
         
         <details class="bloque-raices"><summary>Historia y Raíces <span>▼</span></summary><div class="contenido-bloque">
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Iglesias</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="templos" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Templos</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="sitios" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Sitios arqueológicos</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="museos" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Museos</label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> <span class="texto-item">Iglesias</span></label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="templos" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> <span class="texto-item">Templos</span></label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="sitios" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> <span class="texto-item">Sitios arqueológicos</span></label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="museos" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> <span class="texto-item">Museos</span></label>
         </div></details>
 
         <details class="bloque-manos"><summary>Manos Creadoras <span>▼</span></summary><div class="contenido-bloque">
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> Talleres artesanales</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="trajes" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> Confección de trajes típicos</label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> <span class="texto-item">Talleres artesanales</span></label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="trajes" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> <span class="texto-item">Confección de trajes típicos</span></label>
         </div></details>
 
         <details class="bloque-sabores"><summary>Sabores <span>▼</span></summary><div class="contenido-bloque">
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="panaderias" checked onchange="filtrar()"> <div class="circulo" style="background:#d35400"></div> Panaderías</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fondas" checked onchange="filtrar()"> <div class="circulo" style="background:#d35400"></div> Fondas</label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="panaderias" checked onchange="filtrar()"> <div class="circulo" style="background:#d35400"></div> <span class="texto-item">Panaderías</span></label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fondas" checked onchange="filtrar()"> <div class="circulo" style="background:#d35400"></div> <span class="texto-item">Fondas</span></label>
         </div></details>
 
         <details class="bloque-fiestas"><summary>Fiestas <span>▼</span></summary><div class="contenido-bloque">
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> <div class="circulo" style="background:#c70039"></div> Fiestas</label>
-            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="mitos" checked onchange="filtrar()"> <div class="circulo" style="background:#c70039"></div> Mitos</label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> <div class="circulo" style="background:#c70039"></div> <span class="texto-item">Fiestas</span></label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="mitos" checked onchange="filtrar()"> <div class="circulo" style="background:#c70039"></div> <span class="texto-item">Mitos</span></label>
         </div></details>
     </div>
 
@@ -132,7 +124,3 @@ He ajustado el CSS de `.item-leyenda` para que sea **estricto**: `gap` pequeño,
 </script>
 </body>
 </html>
-
-```
-
-¿Sientes que el texto ya está lo suficientemente pegado al checkbox ahora?
