@@ -36,7 +36,7 @@
             <label><input type="checkbox" class="filtro" data-cat="fondas" checked onchange="filtrar()"> Fondas</label>
         </div></details>
         <details><summary style="background:#c70039">Fiestas</summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Fiestas</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Fiestas tradicionales</label><br>
             <label><input type="checkbox" class="filtro" data-cat="mitos" checked onchange="filtrar()"> Mitos</label>
         </div></details>
     </div>
@@ -48,9 +48,9 @@
         <input type="text" name="Nombre" placeholder="Nombre del lugar" required>
         <select name="Categoria">
             <option value="iglesias">Iglesias</option><option value="templos">Templos</option><option value="sitios">Sitios arqueológicos</option><option value="museos">Museos</option>
-            <option value="talleres">Talleres artesanales</option><option value="trajes">Confección de trajes</option>
+            <option value="talleres">Talleres artesanales</option><option value="trajes">Confección de trajes típicos</option>
             <option value="panaderias">Panaderías</option><option value="fondas">Fondas</option>
-            <option value="fiestas">Fiestas</option><option value="mitos">Mitos</option>
+            <option value="fiestas">Fiestas tradicionales</option><option value="mitos">Mitos</option>
         </select>
         <button type="submit" style="background:#1a5276; color:white; border:none; padding:10px; width:100%;">Enviar</button>
         <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="width:100%; margin-top:5px;">Cancelar</button>
@@ -61,7 +61,14 @@
         const map = L.map('mapa').setView([8.5380, -80.7821], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
 
-        const grupos = { iglesias: L.layerGroup().addTo(map), templos: L.layerGroup().addTo(map), sitios: L.layerGroup().addTo(map), museos: L.layerGroup().addTo(map), talleres: L.layerGroup().addTo(map), trajes: L.layerGroup().addTo(map), panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map) };
+        // Grupos independientes para cada checkbox
+        const grupos = { 
+            iglesias: L.layerGroup().addTo(map), templos: L.layerGroup().addTo(map), 
+            sitios: L.layerGroup().addTo(map), museos: L.layerGroup().addTo(map),
+            talleres: L.layerGroup().addTo(map), trajes: L.layerGroup().addTo(map), 
+            panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), 
+            fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map) 
+        };
 
         map.on('click', () => { document.getElementById('form-container').style.display = 'block'; });
 
@@ -70,9 +77,15 @@
             L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]).bindPopup(`<div><img src="${img}" style="width:100%"><h3 style="color:#1a5276">${titulo}</h3><p style="font-size:12px">${texto}</p></div>`);
         }
 
+        // Ejemplo con la categoría 'fiestas'
         agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
 
-        function filtrar() { document.querySelectorAll('.filtro').forEach(c => { const g = grupos[c.dataset.cat]; if (g) { c.checked ? map.addLayer(g) : map.removeLayer(g); } }); }
+        function filtrar() { 
+            document.querySelectorAll('.filtro').forEach(c => { 
+                const g = grupos[c.dataset.cat]; 
+                if (g) { c.checked ? map.addLayer(g) : map.removeLayer(g); } 
+            }); 
+        }
     </script>
 </body>
 </html>
