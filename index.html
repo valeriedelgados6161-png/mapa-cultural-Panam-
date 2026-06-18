@@ -24,7 +24,7 @@
         .contenido-bloque { padding: 10px; }
         .item-leyenda { display: flex; align-items: center; padding: 8px; font-size: 14px; color: #333; cursor: pointer; }
         .circulo { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
-        #mapa { flex-grow: 1; height: 100%; }
+        #mapa { flex-grow: 1; height: 100%; width: 100%; }
         .custom-card { text-align: center; max-width: 250px; }
         .custom-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px 8px 0 0; display: block; }
         .card-body { padding: 15px; text-align: justify; }
@@ -32,6 +32,27 @@
         .card-body p { font-size: 12px; color: #4a5568; line-height: 1.5; }
         #form-container { display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:white; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:2000; width: 300px; }
         #form-container input, #form-container select { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
+
+        /* Mejora para celular: Mapa debajo de la leyenda */
+        @media (max-width: 768px) {
+            body { 
+                flex-direction: column; 
+                overflow-y: auto; 
+                height: 100vh; 
+            }
+            #leyenda { 
+                width: 100%; 
+                min-width: 100%; 
+                height: 200px; /* Altura fija para la leyenda en móvil */
+                overflow-y: auto;
+                flex: 0 0 auto;
+            }
+            #mapa { 
+                width: 100%; 
+                height: calc(100vh - 200px); /* El mapa ocupa el resto de la pantalla */
+                flex: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -47,10 +68,10 @@
             <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="sitios" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Sitios arqueológicos</label>
             <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="museos" checked onchange="filtrar()"> <div class="circulo" style="background:#1a5276"></div> Museos</label>
         </div></details>
-      <details class="bloque-manos"><summary><i class="fas fa-palette"></i> Manos Creadoras <span>▼</span></summary><div class="contenido-bloque">
-    <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> Talleres artesanales</label>
-    <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="trajes" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> Confección de trajes típicos</label>
-</div></details>
+        <details class="bloque-manos"><summary><i class="fas fa-palette"></i> Manos Creadoras <span>▼</span></summary><div class="contenido-bloque">
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> Talleres artesanales</label>
+            <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="trajes" checked onchange="filtrar()"> <div class="circulo" style="background:#1e8449"></div> Confección de trajes típicos</label>
+        </div></details>
         <details class="bloque-sabores"><summary><i class="fas fa-utensils"></i> Sabores <span>▼</span></summary><div class="contenido-bloque">
             <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="panaderias" checked onchange="filtrar()"> <div class="circulo" style="background:#d35400"></div> Panaderías</label>
             <label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fondas" checked onchange="filtrar()"> <div class="circulo" style="background:#d35400"></div> Fondas</label>
