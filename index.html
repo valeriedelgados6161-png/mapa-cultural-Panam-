@@ -11,6 +11,10 @@
     <style>
         body { font-family: 'Lato', sans-serif; display: flex; margin: 0; height: 100vh; background-color: #f0f2f5; overflow: hidden; }
         #leyenda { width: 360px; min-width: 360px; height: 100vh; padding: 20px; background: #ffffff; box-shadow: 2px 0 15px rgba(0,0,0,0.08); display: flex; flex-direction: column; z-index: 1000; overflow-y: auto; }
+        
+        /* Solución para que no se aplasten las categorías en celular */
+        #leyenda > * { flex-shrink: 0; } 
+
         #leyenda h2 { color: #2c3e50; font-family: 'Playfair Display', serif; font-size: 24px; margin: 0 0 5px 0; }
         .eslogan { font-size: 16px; color: #2c3e50; opacity: 0.7; font-family: 'Playfair Display', serif; margin-bottom: 20px; }
         .caja-tip { border-left: 4px solid #f1c40f; padding: 10px; font-size: 13px; color: #555; background: #fffef0; line-height: 1.4; margin-bottom: 20px; border-radius: 4px; }
@@ -35,7 +39,7 @@
 
         @media (max-width: 768px) {
             body { flex-direction: column; overflow-y: auto; }
-            #leyenda { width: 100%; min-width: 100%; height: 45vh; }
+            #leyenda { width: 100%; min-width: 100%; height: 45vh; box-sizing: border-box; }
             #mapa { height: 55vh; }
         }
     </style>
@@ -108,7 +112,8 @@
             }
         }
 
-        agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Fiesta tradicional de nuestra comunidad.', 'fiestas');
+        // Texto recuperado en todo su esplendor
+        agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
 
         function filtrar() {
             document.querySelectorAll('.filtro').forEach(c => {
