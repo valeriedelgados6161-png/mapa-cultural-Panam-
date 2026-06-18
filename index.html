@@ -7,12 +7,14 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; flex-direction: column; overflow: hidden; }
-        #leyenda { width: 100%; padding: 10px; background: white; z-index: 1000; box-sizing: border-box; overflow-y: auto; max-height: 45vh; }
+        #leyenda { width: 100%; padding: 10px; background: white; z-index: 1000; box-sizing: border-box; overflow-y: auto; max-height: 40vh; }
         #mapa { flex-grow: 1; width: 100%; z-index: 1; }
         details { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; }
         summary { padding: 12px; cursor: pointer; font-weight: bold; color: white; border-radius: 8px; display: flex; justify-content: space-between; }
         .contenido-bloque { padding: 10px; }
-        #form-container { display:none; position:fixed; top:10%; left:5%; width:90%; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:9999; }
+        #modal-info { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; padding:20px; box-sizing:border-box; overflow-y:auto; color:white; text-align:center; }
+        #modal-img { max-width: 100%; border-radius: 10px; }
+        #form-container { display:none; position:fixed; top:10%; left:5%; width:90%; background:white; padding:20px; border-radius:10px; z-index:9999; color:black; }
         input, select { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
     </style>
 </head>
@@ -20,7 +22,6 @@
 
     <div id="leyenda">
         <h2>Mapa Cultural de Panamá</h2>
-        
         <details><summary style="background:#1a5276">Historia y Raíces</summary><div class="contenido-bloque">
             <label><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> Iglesias</label><br>
             <label><input type="checkbox" class="filtro" data-cat="templos" checked onchange="filtrar()"> Templos</label><br>
@@ -43,16 +44,23 @@
 
     <div id="mapa"></div>
 
+    <div id="modal-info" onclick="this.style.display='none'">
+        <h2 id="modal-titulo"></h2>
+        <img id="modal-img" src="" alt="Lugar">
+        <p id="modal-texto" style="text-align:justify; line-height:1.6;"></p>
+        <p style="color:#aaa; font-size:0.8em;">(Toca aquí para cerrar)</p>
+    </div>
+
     <form id="form-container" action="https://formsubmit.co/valery.delgado@tp.ac.pa" method="POST">
-        <h3>Sugerir nuevo lugar</h3>
-        <input type="text" name="Nombre" placeholder="Nombre del lugar" required>
+        <h3>Sugerir lugar</h3>
+        <input type="text" name="Nombre" placeholder="Nombre" required>
         <select name="Categoria">
             <option value="iglesias">Iglesias</option><option value="templos">Templos</option><option value="sitios">Sitios arqueológicos</option><option value="museos">Museos</option>
             <option value="talleres">Talleres artesanales</option><option value="trajes">Confección de trajes típicos</option>
             <option value="panaderias">Panaderías</option><option value="fondas">Fondas</option>
             <option value="fiestas">Fiestas tradicionales</option><option value="mitos">Mitos</option>
         </select>
-        <button type="submit" style="background:#1a5276; color:white; border:none; padding:10px; width:100%;">Enviar</button>
+        <button type="submit" style="background:#1a5276; color:white; width:100%; padding:10px;">Enviar</button>
         <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="width:100%; margin-top:5px;">Cancelar</button>
     </form>
 
@@ -61,31 +69,26 @@
         const map = L.map('mapa').setView([8.5380, -80.7821], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
 
-        // Grupos independientes para cada checkbox
-        const grupos = { 
-            iglesias: L.layerGroup().addTo(map), templos: L.layerGroup().addTo(map), 
-            sitios: L.layerGroup().addTo(map), museos: L.layerGroup().addTo(map),
-            talleres: L.layerGroup().addTo(map), trajes: L.layerGroup().addTo(map), 
-            panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), 
-            fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map) 
-        };
+        const grupos = { iglesias: L.layerGroup().addTo(map), templos: L.layerGroup().addTo(map), sitios: L.layerGroup().addTo(map), museos: L.layerGroup().addTo(map), talleres: L.layerGroup().addTo(map), trajes: L.layerGroup().addTo(map), panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map) };
 
         map.on('click', () => { document.getElementById('form-container').style.display = 'block'; });
 
+        function mostrarInfo(titulo, img, texto) {
+            document.getElementById('modal-titulo').innerText = titulo;
+            document.getElementById('modal-img').src = img;
+            document.getElementById('modal-texto').innerText = texto;
+            document.getElementById('modal-info').style.display = 'block';
+        }
+
         function agregarPunto(lat, lng, color, titulo, img, texto, cat) {
             const icono = L.divIcon({ html: `<div style="background-color:${color}; width:16px; height:16px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [16, 16] });
-            L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]).bindPopup(`<div><img src="${img}" style="width:100%"><h3 style="color:#1a5276">${titulo}</h3><p style="font-size:12px">${texto}</p></div>`);
+            const marker = L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]);
+            marker.on('click', () => mostrarInfo(titulo, img, texto));
         }
 
-        // Ejemplo con la categoría 'fiestas'
         agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
 
-        function filtrar() { 
-            document.querySelectorAll('.filtro').forEach(c => { 
-                const g = grupos[c.dataset.cat]; 
-                if (g) { c.checked ? map.addLayer(g) : map.removeLayer(g); } 
-            }); 
-        }
+        function filtrar() { document.querySelectorAll('.filtro').forEach(c => { const g = grupos[c.dataset.cat]; if (g) { c.checked ? map.addLayer(g) : map.removeLayer(g); } }); }
     </script>
 </body>
 </html>
