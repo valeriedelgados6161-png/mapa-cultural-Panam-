@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa Cultural de Panamá</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; flex-direction: column; }
-        #leyenda { width: 100%; padding: 15px; background: white; z-index: 1000; box-sizing: border-box; overflow-y: auto; max-height: 50vh; }
+        body { font-family: sans-serif; display: flex; margin: 0; height: 100vh; flex-direction: column; overflow: hidden; }
+        #leyenda { width: 100%; padding: 10px; background: white; z-index: 1000; box-sizing: border-box; overflow-y: auto; max-height: 45vh; }
         #mapa { flex-grow: 1; width: 100%; z-index: 1; }
-        details { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; }
-        summary { padding: 15px; cursor: pointer; font-weight: bold; color: white; display: flex; justify-content: space-between; border-radius: 8px; }
+        details { background: #fff; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; }
+        summary { padding: 12px; cursor: pointer; font-weight: bold; color: white; border-radius: 8px; display: flex; justify-content: space-between; }
         .contenido-bloque { padding: 10px; }
         #form-container { display:none; position:fixed; top:10%; left:5%; width:90%; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:9999; }
         input, select { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
@@ -22,23 +21,31 @@
     <div id="leyenda">
         <h2>Mapa Cultural de Panamá</h2>
         <p>💡 Presiona el mapa para sugerir un lugar.</p>
-        <details class="bloque-raices"><summary style="background:#1a5276">Historia y Raíces <span>▼</span></summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> Iglesias</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="templos" checked onchange="filtrar()"> Templos</label>
+        
+        <!-- Categorías restauradas -->
+        <details><summary style="background:#1a5276">Historia y Raíces</summary><div class="contenido-bloque">
+            <label><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> Iglesias y Sitios</label>
         </div></details>
-        <details class="bloque-fiestas"><summary style="background:#c70039">Fiestas <span>▼</span></summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Fiestas</label>
+        <details><summary style="background:#1e8449">Manos Creadoras</summary><div class="contenido-bloque">
+            <label><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> Talleres Artesanales</label>
+        </div></details>
+        <details><summary style="background:#d35400">Sabores</summary><div class="contenido-bloque">
+            <label><input type="checkbox" class="filtro" data-cat="sabores" checked onchange="filtrar()"> Fondas y Comidas</label>
+        </div></details>
+        <details><summary style="background:#c70039">Fiestas</summary><div class="contenido-bloque">
+            <label><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Fiestas Tradicionales</label>
         </div></details>
     </div>
 
     <div id="mapa"></div>
 
     <form id="form-container" action="https://formsubmit.co/valery.delgado@tp.ac.pa" method="POST">
-        <h3>Sugerir lugar</h3>
-        <input type="hidden" name="_captcha" value="false">
+        <h3>Sugerir nuevo lugar</h3>
         <input type="text" name="Nombre" placeholder="Nombre del lugar" required>
         <select name="Categoria">
             <option value="iglesias">Historia y Raíces</option>
+            <option value="talleres">Manos Creadoras</option>
+            <option value="sabores">Sabores</option>
             <option value="fiestas">Fiestas</option>
         </select>
         <button type="submit" style="background:#1a5276; color:white; border:none; padding:10px; width:100%;">Enviar al Correo</button>
@@ -50,13 +57,13 @@
         const map = L.map('mapa').setView([8.5380, -80.7821], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
 
-        const grupos = { iglesias: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map) };
+        const grupos = { iglesias: L.layerGroup().addTo(map), talleres: L.layerGroup().addTo(map), sabores: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map) };
 
         map.on('click', () => { document.getElementById('form-container').style.display = 'block'; });
 
         function agregarPunto(lat, lng, color, titulo, img, texto, cat) {
             const icono = L.divIcon({ html: `<div style="background-color:${color}; width:16px; height:16px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [16, 16] });
-            L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]).bindPopup(`<div><img src="${img}" style="width:100%"><h3 style="color:#1a5276">${titulo}</h3><p>${texto}</p></div>`);
+            L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]).bindPopup(`<div><img src="${img}" style="width:100%"><h3 style="color:#1a5276">${titulo}</h3><p style="font-size:12px">${texto}</p></div>`);
         }
 
         agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
