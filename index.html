@@ -25,17 +25,17 @@
         .item-leyenda { display: flex; align-items: center; padding: 8px; font-size: 14px; color: #333; cursor: pointer; }
         .circulo { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
         #mapa { flex-grow: 1; height: 100%; z-index: 1; }
-        /* Ajuste de cards para que no se corten */
-        .custom-card { text-align: center; width: 250px; }
-        .custom-card img { width: 100%; height: 150px; object-fit: cover; }
-        .card-body { padding: 10px; text-align: justify; }
-        .card-body h3 { color: #1a5276; font-family: 'Playfair Display', serif; margin-top: 0; }
-        .card-body p { font-size: 13px; color: #4a5568; line-height: 1.6; }
+
+        /* Modal estilo pantalla completa */
+        #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; border-radius: 15px; padding: 20px; position: relative; }
+        .btn-cerrar { background: #c70039; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: block; margin: 20px auto 0; }
+        
         #form-container { display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:white; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:9999; width: 90%; max-width: 400px; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            #leyenda { width: 100%; height: 35vh; min-height: 200px; }
+            #leyenda { width: 100%; height: 35vh; }
             #mapa { height: 65vh; }
         }
     </style>
@@ -68,6 +68,10 @@
     </div>
 
     <div id="mapa"></div>
+
+    <div id="modal-detalle">
+        <div class="modal-contenido" id="modal-contenido-interno"></div>
+    </div>
 
     <form id="form-container" action="https://formsubmit.co/valery.delgado@tp.ac.pa" method="POST">
         <h3>Registrar nuevo lugar</h3>
@@ -102,7 +106,19 @@
 
         function agregarPunto(lat, lng, color, titulo, img, texto, cat) {
             const icono = L.divIcon({ html: `<div style="background-color:${color}; width:16px; height:16px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [16, 16] });
-            L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]).bindPopup(`<div class="custom-card"><img src="${img}"><div class="card-body"><h3>${titulo}</h3><p>${texto}</p></div></div>`);
+            const marker = L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]);
+            
+            marker.on('click', () => {
+                const modal = document.getElementById('modal-detalle');
+                const contenido = document.getElementById('modal-contenido-interno');
+                contenido.innerHTML = `
+                    <img src="${img}" style="width:100%; border-radius:10px;">
+                    <h2>${titulo}</h2>
+                    <p>${texto}</p>
+                    <button class="btn-cerrar" onclick="document.getElementById('modal-detalle').style.display='none'">Cerrar</button>
+                `;
+                modal.style.display = 'flex';
+            });
         }
 
         agregarPunto(7.8357, -80.3964, '#c70039', 'Semana del Campesino en Agua Buena.', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
