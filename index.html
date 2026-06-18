@@ -24,8 +24,11 @@
         .bloque-fiestas summary { background-color: #c70039; }
 
         .contenido-bloque { padding: 10px 20px; }
-        .item-leyenda { display: flex; align-items: center; padding: 8px 0; font-size: 15px; color: #333; cursor: pointer; }
-        .circulo { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
+        
+        /* CORRECCIÓN: Alineación del texto para evitar que se salga */
+        .item-leyenda { display: flex; align-items: center; padding: 8px 0; font-size: 15px; color: #333; cursor: pointer; width: 100%; white-space: normal; }
+        .item-leyenda input { margin-right: 12px; flex-shrink: 0; }
+        .circulo { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
 
         #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; }
         .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; padding: 25px; border-radius: 15px; position: relative; }
@@ -68,7 +71,6 @@
 
 <div id="modal-detalle"><div class="modal-contenido" id="modal-contenido-interno"></div></div>
 
-<!-- Campo action configurado con tu código -->
 <form id="form-container" action="https://formsubmit.co/1089a8264906f363c401344421b47167" method="POST">
     <h3>Registrar nuevo lugar</h3>
     <input type="text" name="Nombre" placeholder="Nombre del lugar" required>
