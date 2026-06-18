@@ -25,17 +25,18 @@
         .item-leyenda { display: flex; align-items: center; padding: 8px; font-size: 14px; color: #333; cursor: pointer; }
         .circulo { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
         #mapa { flex-grow: 1; height: 100%; z-index: 1; }
-        
-        /* ESTILOS NUEVOS PARA LA VENTANA MODAL (Pantalla completa y oscuro) */
+
+        /* Modal oscuro */
         #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; border-radius: 15px; padding: 20px; position: relative; text-align: center; }
-        .btn-cerrar { background: #c70039; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 15px; width: 100%; }
+        .modal-contenido { background: white; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; border-radius: 15px; padding: 25px; position: relative; }
+        .btn-cerrar { background: #c70039; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 15px; }
         
-        #form-container { display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:white; padding:20px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:9999; width: 90%; max-width: 400px; }
+        #form-container { display:none; position:fixed; top:10%; left:50%; transform:translateX(-50%); background:white; padding:25px; border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.3); z-index:9999; width: 320px; }
+        #form-container input, #form-container select { width: 100%; margin-bottom: 15px; padding: 10px; box-sizing: border-box; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            #leyenda { width: 100%; height: 35vh; min-height: 200px; }
+            #leyenda { width: 100%; height: 35vh; }
             #mapa { height: 65vh; }
         }
     </style>
@@ -77,12 +78,18 @@
         <h3>Registrar nuevo lugar</h3>
         <input type="text" name="Nombre" id="nombre-lugar" placeholder="Nombre del lugar" required>
         <select name="Categoria" id="categoria-lugar">
-            <option value="iglesias">Iglesias</option><option value="templos">Templos</option><option value="sitios">Sitios arqueológicos</option>
-            <option value="museos">Museos</option><option value="fiestas">Fiestas</option><option value="talleres">Talleres Artesanales</option>
-            <option value="trajes">Confección de Trajes típicos</option><option value="panaderias">Panaderías</option><option value="fondas">Fondas</option>
+            <option value="iglesias">Iglesias</option>
+            <option value="templos">Templos</option>
+            <option value="sitios">Sitios arqueológicos</option>
+            <option value="museos">Museos</option>
+            <option value="talleres">Talleres artesanales</option>
+            <option value="trajes">Confección de trajes típicos</option>
+            <option value="panaderias">Panaderías</option>
+            <option value="fondas">Fondas</option>
+            <option value="fiestas">Fiestas</option>
             <option value="mitos">Mitos</option>
         </select>
-        <button type="submit" style="background:#1a5276; color:white; border:none; padding:10px; width:100%; cursor:pointer;">Enviar</button>
+        <button type="submit" onclick="confirmarYGuardar()" style="background:#1a5276; color:white; border:none; padding:10px; width:100%; cursor:pointer;">Enviar</button>
         <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="margin-top:5px; width:100%; cursor:pointer;">Cancelar</button>
     </form>
 
@@ -97,11 +104,13 @@
             panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map)
         };
 
+        let latE, lngE;
         map.on('click', (e) => {
+            latE = e.latlng.lat;
+            lngE = e.latlng.lng;
             document.getElementById('form-container').style.display = 'block';
         });
 
-        // MODIFICACIÓN: Aquí quitamos el bindPopup y usamos la ventana modal
         function agregarPunto(lat, lng, color, titulo, img, texto, cat) {
             const icono = L.divIcon({ html: `<div style="background-color:${color}; width:16px; height:16px; border-radius:50%; border:2px solid white;"></div>`, iconSize: [16, 16] });
             const marker = L.marker([lat, lng], {icon: icono}).addTo(grupos[cat]);
@@ -110,9 +119,9 @@
                 const modal = document.getElementById('modal-detalle');
                 const contenido = document.getElementById('modal-contenido-interno');
                 contenido.innerHTML = `
-                    <img src="${img}" style="width:100%; height:200px; object-fit:cover; border-radius:10px;">
-                    <h3>${titulo}</h3>
-                    <p style="text-align:justify; font-size:14px; color:#4a5568;">${texto}</p>
+                    <img src="${img}" style="width:100%; border-radius:10px;">
+                    <h2 style="color:#1a5276;">${titulo}</h2>
+                    <p style="text-align:justify;">${texto}</p>
                     <button class="btn-cerrar" onclick="document.getElementById('modal-detalle').style.display='none'">Cerrar</button>
                 `;
                 modal.style.display = 'flex';
