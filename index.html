@@ -20,20 +20,24 @@
 
     <div id="leyenda">
         <h2>Mapa Cultural de Panamá</h2>
-        <p>💡 Presiona el mapa para sugerir un lugar.</p>
         
-        <!-- Categorías restauradas -->
         <details><summary style="background:#1a5276">Historia y Raíces</summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> Iglesias y Sitios</label>
+            <label><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> Iglesias</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="templos" checked onchange="filtrar()"> Templos</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="sitios" checked onchange="filtrar()"> Sitios arqueológicos</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="museos" checked onchange="filtrar()"> Museos</label>
         </div></details>
         <details><summary style="background:#1e8449">Manos Creadoras</summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> Talleres Artesanales</label>
+            <label><input type="checkbox" class="filtro" data-cat="talleres" checked onchange="filtrar()"> Talleres artesanales</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="trajes" checked onchange="filtrar()"> Confección de trajes típicos</label>
         </div></details>
         <details><summary style="background:#d35400">Sabores</summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="sabores" checked onchange="filtrar()"> Fondas y Comidas</label>
+            <label><input type="checkbox" class="filtro" data-cat="panaderias" checked onchange="filtrar()"> Panaderías</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="fondas" checked onchange="filtrar()"> Fondas</label>
         </div></details>
         <details><summary style="background:#c70039">Fiestas</summary><div class="contenido-bloque">
-            <label><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Fiestas Tradicionales</label>
+            <label><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Fiestas</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="mitos" checked onchange="filtrar()"> Mitos</label>
         </div></details>
     </div>
 
@@ -43,12 +47,12 @@
         <h3>Sugerir nuevo lugar</h3>
         <input type="text" name="Nombre" placeholder="Nombre del lugar" required>
         <select name="Categoria">
-            <option value="iglesias">Historia y Raíces</option>
-            <option value="talleres">Manos Creadoras</option>
-            <option value="sabores">Sabores</option>
-            <option value="fiestas">Fiestas</option>
+            <option value="iglesias">Iglesias</option><option value="templos">Templos</option><option value="sitios">Sitios arqueológicos</option><option value="museos">Museos</option>
+            <option value="talleres">Talleres artesanales</option><option value="trajes">Confección de trajes</option>
+            <option value="panaderias">Panaderías</option><option value="fondas">Fondas</option>
+            <option value="fiestas">Fiestas</option><option value="mitos">Mitos</option>
         </select>
-        <button type="submit" style="background:#1a5276; color:white; border:none; padding:10px; width:100%;">Enviar al Correo</button>
+        <button type="submit" style="background:#1a5276; color:white; border:none; padding:10px; width:100%;">Enviar</button>
         <button type="button" onclick="document.getElementById('form-container').style.display='none'" style="width:100%; margin-top:5px;">Cancelar</button>
     </form>
 
@@ -57,7 +61,7 @@
         const map = L.map('mapa').setView([8.5380, -80.7821], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(map);
 
-        const grupos = { iglesias: L.layerGroup().addTo(map), talleres: L.layerGroup().addTo(map), sabores: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map) };
+        const grupos = { iglesias: L.layerGroup().addTo(map), templos: L.layerGroup().addTo(map), sitios: L.layerGroup().addTo(map), museos: L.layerGroup().addTo(map), talleres: L.layerGroup().addTo(map), trajes: L.layerGroup().addTo(map), panaderias: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map), mitos: L.layerGroup().addTo(map) };
 
         map.on('click', () => { document.getElementById('form-container').style.display = 'block'; });
 
