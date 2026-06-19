@@ -17,8 +17,14 @@
         .subcat-list { padding: 10px; background: #fff; border-radius: 0 0 12px 12px; }
         
         #mapa { height: 400px; border: 5px solid white; border-radius: 18px; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 20px; z-index: 2000; }
-        .box { background: white; padding: 20px; border-radius: 20px; max-height: 80vh; overflow-y: auto; }
+        
+        /* Modal Estilo Post */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; padding: 10px; }
+        .post-card { background: white; width: 100%; max-width: 500px; max-height: 90vh; border-radius: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+        .post-card img { width: 100%; height: 250px; object-fit: cover; border-radius: 20px 20px 0 0; }
+        .post-content { padding: 20px; }
+        .post-content h2 { margin-top: 0; color: #1d3557; }
+        .close-btn { background: #e63946; color: white; border: none; padding: 15px; border-radius: 0 0 20px 20px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -26,111 +32,95 @@
 <div class="container">
     <h1>Herencia Viva</h1>
     <div class="eslogan">Nuestras raíces a un toque de distancia.</div>
-    <div class="tip">💡Tip: Haz click en cualquier punto del mapa para sugeir una nueva ubicación.</div>
-
-    <!-- Categorías -->
-    <details><summary style="background:#1F567D;">Patrimonio Histórico <span>▼</span></summary>
-        <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Iglesias" checked> Iglesias</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Sitios históricos" checked> Sitios históricos</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Monumentos" checked> Monumentos</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Museos" checked> Museos</label>
-        </div>
-    </details>
-
-    <details><summary style="background:#23904C;">Manos que Crean <span>▼</span></summary>
-        <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Talleres de artesanía" checked> Talleres de artesanía</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Confección de trajes típicos" checked> Confección de trajes típicos</label>
-        </div>
-    </details>
-
-    <details><summary style="background:#D86200;">Sabores de Nuestra Tierra <span>▼</span></summary>
-        <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Fondas" checked> Fondas</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Panaderías tradicionales" checked> Panaderías tradicionales</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Postres típicos" checked> Postres típicos</label>
-        </div>
-    </details>
+    <div class="tip">💡 Tip: Haz click en cualquier punto del mapa para sugerir una nueva ubicación.</div>
 
     <details><summary style="background:#C2185B;">Expresiones y Leyendas <span>▼</span></summary>
         <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Festividades" checked> Festividades</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Mitos y leyendas" checked> Mitos y leyendas</label>
+            <label><input type="checkbox" class="filtro" data-cat="Festividades" checked> Festividades</label>
         </div>
     </details>
-
+    <details><summary style="background:#23904C;">Manos que Crean <span>▼</span></summary>
+        <div class="subcat-list">
+            <label><input type="checkbox" class="filtro" data-cat="Talleres de artesanía" checked> Talleres de artesanía</label>
+        </div>
+    </details>
     <details><summary style="background:#2980B9;">Espacios de Encuentro <span>▼</span></summary>
         <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Plazas" checked> Plazas</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Parques" checked> Parques</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Centros comunitarios" checked> Centros comunitarios</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Bibliotecas" checked> Bibliotecas</label>
-        </div>
-    </details>
-
-    <details><summary style="background:#D4A017;">Secretos de la Tierra <span>▼</span></summary>
-        <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Curiosidades" checked> Curiosidades</label><br>
-            <label><input type="checkbox" class="filtro" data-cat="Lugares escondidos" checked> Lugares escondidos</label>
+            <label><input type="checkbox" class="filtro" data-cat="Parques" checked> Parques</label>
         </div>
     </details>
 
     <div id="mapa"></div>
 </div>
 
+<div id="formulario" class="modal">
+    <div class="post-card">
+        <div class="post-content">
+            <h2>Sugerir sitio cultural</h2>
+            <form action="https://formspree.io/f/b8fbb405a3bce986fe67732366390e27" method="POST">
+                <input type="text" name="nombre" placeholder="Nombre del sitio" required style="width:100%; padding:10px; margin:5px 0;">
+                <input id="coords" name="coordenadas" readonly style="width:100%; padding:10px; margin:5px 0;">
+                <textarea name="descripcion" placeholder="Descripción" required style="width:100%; padding:10px; margin:5px 0;"></textarea>
+                <button type="submit" style="width:100%; padding:12px; background:#1d3557; color:white; border:none; border-radius:8px;">Enviar sugerencia</button>
+            </form>
+        </div>
+        <button class="close-btn" onclick="document.getElementById('formulario').style.display='none'">Cerrar</button>
+    </div>
+</div>
+
+<div id="info-modal" class="modal">
+    <div class="post-card">
+        <div id="post-data"></div>
+        <button class="close-btn" onclick="document.getElementById('info-modal').style.display='none'">Cerrar Post</button>
+    </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    const map = L.map('mapa').setView([7.8, -80.4], 10);
+    const map = L.map('mapa').setView([7.8357, -80.3964], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-   
-// Definición de puntos con descripciones y fotos
     const puntos = [
-        {
-            lat: 7.8357, 
-            lng: -80.3964, 
-            cat: 'Festividades', 
-            nombre: 'Semana del Campesino en Agua Buena', 
-            color: '#C2185B',
-            img: 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg',
-            desc: 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.'
+        { 
+            lat: 7.8357, lng: -80.3964, cat: 'Festividades', nombre: 'Semana del Campesino en Agua Buena', color: '#C2185B', 
+            img: 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 
+            desc: 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.' 
         },
-        {
-            lat: 7.9, 
-            lng: -80.4, 
-            cat: 'Talleres de artesanía', 
-            nombre: 'El Sombrero Pintao', 
-            color: '#23904C',
-            img: 'https://i.postimg.cc/vHDffyq2/sombrero-pintao.jpg',
-            desc: '¿Sabías que un sombrero pintado de alta calidad puede tomar entre 3 y 6 meses de trabajo manual? Esta artesanía tradicional panameña se elabora con fibras naturales de bellota, que son cuidadosamente seleccionadas, secadas, teñidas y tejidas a mano. Los diseños oscuros característicos se obtienen mediante tintes naturales extraídos de plantas y cortezas. Mientras más fino y apretado sea el tejido, mayor será el tiempo de elaboración y el valor de la pieza. Cada sombrero representa cientos de horas de trabajo y conocimientos transmitidos de generación en generación por los artesanos panameños. Esta pieza no solo es un accesorio, es un símbolo de identidad nacional que ha sido reconocido por su valor histórico y cultural.<br><br><b>Fuente:</b> UNESCO, Patrimonio Cultural Inmaterial.'
+        { 
+            lat: 7.9, lng: -80.4, cat: 'Talleres de artesanía', nombre: 'El Sombrero Pintao', color: '#23904C', 
+            img: 'https://i.postimg.cc/vHDffyq2/sombrero-pintao.jpg', 
+            desc: '¿Sabías que un sombrero pintado de alta calidad puede tomar entre 3 y 6 meses de trabajo manual? Esta artesanía tradicional panameña se elabora con fibras naturales de bellota, que son cuidadosamente seleccionadas, secadas, teñidas y tejidas a mano. Los diseños oscuros característicos se obtienen mediante tintes naturales extraídos de plantas y cortezas. Mientras más fino y apretado sea el tejido, mayor será el tiempo de elaboración y el valor de la pieza. Cada sombrero representa cientos de horas de trabajo y conocimientos transmitidos de generación en generación por los artesanos panameños. Esta pieza no solo es un accesorio, es un símbolo de identidad nacional que ha sido reconocido por su valor histórico y cultural.<br><br><b>Fuente:</b> UNESCO, Patrimonio Cultural Inmaterial.' 
         },
-        {
-            lat: 7.9715, 
-            lng: -80.4290, 
-            cat: 'Parques', 
-            nombre: 'Parque Belisario Porras', 
-            color: '#2980B9',
-            img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Las_Tableras_Panama.jpg/640px-Las_Tableras_Panama.jpg',
-            desc: 'Espacio emblemático utilizado para actividades culturales y comunitarias en el corazón de nuestra región.'
+        { 
+            lat: 7.9715, lng: -80.4290, cat: 'Parques', nombre: 'Parque Belisario Porras', color: '#2980B9', 
+            img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Las_Tableras_Panama.jpg/640px-Las_Tableras_Panama.jpg', 
+            desc: 'Espacio emblemático utilizado para actividades culturales y comunitarias en el corazón de nuestra región.' 
         }
     ];
-    
 
-    let marcadores = [];
+    map.on('click', (e) => {
+        document.getElementById('formulario').style.display = 'flex';
+        document.getElementById('coords').value = e.latlng.lat.toFixed(4) + ", " + e.latlng.lng.toFixed(4);
+    });
 
     function actualizarMapa() {
-        // Limpiar mapa
-        marcadores.forEach(m => map.removeLayer(m));
-        marcadores = [];
+        // Limpiar marcadores existentes
+        map.eachLayer((layer) => { if (layer instanceof L.CircleMarker) map.removeLayer(layer); });
 
-        // Filtrar y mostrar
         puntos.forEach(p => {
             const checkbox = document.querySelector(`[data-cat="${p.cat}"]`);
             if (checkbox && checkbox.checked) {
-                const m = L.circleMarker([p.lat, p.lng], {color: p.color, radius: 8}).addTo(map)
-                           .bindPopup(p.nombre);
-                marcadores.push(m);
+                L.circleMarker([p.lat, p.lng], {color: p.color, radius: 8}).addTo(map)
+                 .on('click', () => {
+                     document.getElementById('info-modal').style.display = 'flex';
+                     document.getElementById('post-data').innerHTML = `
+                         <img src="${p.img}">
+                         <div class="post-content">
+                             <h2>${p.nombre}</h2>
+                             <p style="text-align:justify;">${p.desc}</p>
+                         </div>
+                     `;
+                 });
             }
         });
     }
