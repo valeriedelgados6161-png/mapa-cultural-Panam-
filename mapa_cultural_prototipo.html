@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mapa Cultural de Panamá</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+body{margin:0;background:#eef2f7;font-family:Segoe UI,sans-serif}
+.container{max-width:900px;margin:auto;padding:16px}
+h1{color:#1d3557;margin-bottom:5px}
+.sub{color:#666;margin-bottom:15px}
+.tip{background:#fff;padding:12px;border-left:4px solid #ccc;border-radius:8px;margin-bottom:15px}
+details{margin:10px 0}
+summary{padding:16px;color:#fff;border-radius:14px;font-weight:bold;cursor:pointer}
+details:nth-child(1) summary{background:#1f567d}
+.card1{background:#1f567d}.card2{background:#23904c}.card3{background:#d86200}.card4{background:#c2185b}.card5{background:#2980b9}.card6{background:#d4a017}
+.subcat{background:#fff;padding:10px;border-radius:0 0 14px 14px}
+#mapa{height:500px;border:8px solid white;border-radius:18px;margin-top:15px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);justify-content:center;align-items:center;padding:15px}
+.box{background:white;width:100%;max-width:600px;border-radius:18px;padding:18px;max-height:90vh;overflow:auto}
+input,select,textarea{width:100%;padding:10px;margin:8px 0}
+button{padding:12px;border:none;border-radius:10px}
+.btn{background:#1d3557;color:white;width:100%}
+img{max-width:100%;border-radius:10px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Mapa Cultural de Panamá</h1>
+<div class="sub">Nuestras raíces a un toque de distancia.</div>
+<div class="tip">💡 Presiona cualquier lugar del mapa para registrar un nuevo punto.</div>
+
+<details><summary class="card1">Patrimonio Histórico</summary><div class="subcat">Iglesias • Sitios históricos • Monumentos • Museos</div></details>
+<details><summary class="card2">Manos que Crean</summary><div class="subcat">Talleres de artesanía • Confección de trajes típicos</div></details>
+<details><summary class="card3">Sabores de Nuestra Tierra</summary><div class="subcat">Fondas • Panaderías tradicionales • Postres típicos</div></details>
+<details><summary class="card4">Expresiones y Leyendas</summary><div class="subcat">Festividades • Mitos y leyendas</div></details>
+<details><summary class="card5">Espacios de Encuentro</summary><div class="subcat">Plazas • Parques • Centros comunitarios</div></details>
+<details><summary class="card6">Secretos de la Tierra</summary><div class="subcat">Curiosidades • Lugares escondidos</div></details>
+
+<div id="mapa"></div>
+</div>
+
+<div id="info" class="modal"><div class="box">
+<div id="contenido"></div>
+<button class="btn" onclick="cerrarInfo()">Cerrar</button>
+</div></div>
+
+<div id="formulario" class="modal"><div class="box">
+<h2>Sugerir nuevo sitio cultural</h2>
+<form name="sugerencias" method="POST" data-netlify="true">
+<input type="hidden" name="form-name" value="sugerencias">
+<input name="nombre" placeholder="Nombre del sitio">
+<select name="categoria">
+<option>Patrimonio Histórico</option>
+<option>Manos que Crean</option>
+<option>Sabores de Nuestra Tierra</option>
+<option>Expresiones y Leyendas</option>
+<option>Espacios de Encuentro</option>
+<option>Secretos de la Tierra</option>
+</select>
+<input id="coords" name="coordenadas" readonly>
+<textarea name="descripcion" placeholder="Descripción"></textarea>
+<input type="file" name="foto">
+<button class="btn" type="submit">Enviar</button>
+</form>
+<button class="btn" onclick="cerrarForm()">Cerrar</button>
+</div></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map=L.map('mapa').setView([8.53,-80.78],7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+map.on('click',e=>{
+document.getElementById('formulario').style.display='flex';
+document.getElementById('coords').value=e.latlng.lat.toFixed(4)+", "+e.latlng.lng.toFixed(4);
+});
+
+function mostrar(t,i,d){
+document.getElementById('contenido').innerHTML=`<img src="${i}"><h2>${t}</h2><p>${d}</p>`;
+document.getElementById('info').style.display='flex';
+}
+function cerrarInfo(){document.getElementById('info').style.display='none';}
+function cerrarForm(){document.getElementById('formulario').style.display='none';}
+
+L.circleMarker([7.8357,-80.3964],{radius:8,color:'#c2185b'}).addTo(map)
+.on('click',()=>mostrar('Semana del Campesino en Agua Buena','https://i.postimg.cc/vm2w86Ds/images-(1).jpg','Celebración tradicional que reúne a la comunidad para preservar y compartir las costumbres, la música, la gastronomía y las expresiones culturales de Azuero.'));
+
+L.circleMarker([7.9,-80.4],{radius:8,color:'#23904c'}).addTo(map)
+.on('click',()=>mostrar('El Sombrero Pintao','https://i.postimg.cc/vHDffyq2/sombrero-pintao.jpg','Artesanía tradicional panameña elaborada a mano con fibras naturales. Su confección puede tomar meses y representa una de las expresiones culturales más reconocidas del país.'));
+
+L.circleMarker([7.9715,-80.4290],{radius:8,color:'#2980b9'}).addTo(map)
+.on('click',()=>mostrar('Parque Belisario Porras','https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Las_Tableras_Panama.jpg/640px-Las_Tableras_Panama.jpg','Espacio emblemático utilizado para actividades culturales y comunitarias.'));
+</script>
+</body>
+</html>
