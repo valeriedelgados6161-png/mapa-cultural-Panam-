@@ -2,106 +2,105 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mapa Cultural - Herencia Viva</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herencia Viva - Mapa Cultural</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Lato', sans-serif; background-color: #f4f6f7; overflow: hidden; }
-        #contenedor-principal { display: flex; flex-direction: column; height: 100vh; }
-        
-        #leyenda { width: 100%; background: #ffffff; padding: 20px; overflow-y: auto; flex: 0 0 40%; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 10; }
-        h1 { font-family: 'Playfair Display', serif; color: #2c3e50; font-size: 24px; margin: 0; }
-        .eslogan { font-style: italic; color: #7f8c8d; display: block; margin-bottom: 10px; font-size: 14px; }
-        .tip-box { background: #f39c12; color: white; padding: 8px; border-radius: 5px; font-size: 12px; margin-bottom: 15px; font-weight: bold; }
-        
-        #mapa { flex-grow: 1; width: 100%; }
-        
-        @media screen and (min-width: 768px) {
-            #contenedor-principal { flex-direction: row; }
-            #leyenda { width: 350px; flex: 0 0 350px; height: 100vh; }
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Lato', sans-serif; }
+        #contenedor { display: flex; flex-direction: column; height: 100vh; }
+        #sidebar { 
+            width: 100%; height: 45vh; padding: 20px; box-sizing: border-box; 
+            overflow-y: auto; background: #fff;
+            scrollbar-width: thin; scrollbar-color: #bdc3c7 #f4f4f4;
         }
-
-        details { background: #fff; border-radius: 8px; margin-bottom: 8px; border: 1px solid #e0e0e0; }
-        summary { padding: 12px; cursor: pointer; font-weight: 700; color: white; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         
-        .bloque-raices summary { background-color: #2c3e50; }
-        .bloque-manos summary { background-color: #27ae60; }
-        .bloque-sabores summary { background-color: #e67e22; }
-        .bloque-fiestas summary { background-color: #880e4f; }
-        .bloque-encuentro summary { background-color: #2980b9; }
-        .bloque-secretos summary { background-color: #f39c12; }
-
-        .contenido-bloque { padding: 10px; }
-        .item-leyenda { display: flex; align-items: center; padding: 5px 0; cursor: pointer; font-size: 13px; }
+        h1 { font-family: 'Playfair Display', serif; font-size: 28px; color: #2c3e50; margin: 0; }
+        .slogan { font-size: 16px; color: #7f8c8d; margin-bottom: 15px; display: block; }
+        .tip-container { background: #fff3e0; border-left: 4px solid #f39c12; padding: 10px; margin-bottom: 20px; font-size: 13px; color: #555; }
         
-        /* Formulario */
-        #formulario { margin-top: 20px; padding: 15px; border: 2px solid #2c3e50; border-radius: 10px; }
-        input, textarea { width: 100%; box-sizing: border-box; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 5px; }
+        .cat-box { padding: 12px; margin-bottom: 8px; border-radius: 8px; color: white; font-weight: 700; cursor: pointer; font-size: 14px; }
+        
+        .form-area { margin-top: 25px; padding: 15px; border: 1px solid #eee; border-radius: 12px; background: #fafafa; }
+        input, textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        
+        #mapa { flex-grow: 1; border: 8px solid #fff; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 10px; }
 
-        #modal-detalle { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; }
-        .modal-contenido { background: white; width: 90%; max-width: 500px; padding: 25px; border-radius: 20px; max-height: 85vh; overflow-y: auto; text-align: center; }
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; width: 90%; max-width: 500px; padding: 25px; border-radius: 15px; text-align: center; max-height: 80vh; overflow-y: auto; }
+
+        @media (min-width: 768px) {
+            #contenedor { flex-direction: row; }
+            #sidebar { width: 350px; height: 100vh; }
+        }
     </style>
 </head>
 <body>
 
-<div id="contenedor-principal">
-    <div id="leyenda">
+<div id="contenedor">
+    <div id="sidebar">
         <h1>Mapa Cultural</h1>
-        <span class="eslogan">Nuestra herencia a un toque de distancia.</span>
-        <div class="tip-box">💡 Presiona cualquier lugar del mapa donde desees poner un lugar de interés.</div>
+        <span class="slogan">Herencia Viva: Percepción y valoración del patrimonio cultural.</span>
         
-        <details class="bloque-raices"><summary>Patrimonio Histórico <span>▼</span></summary><div class="contenido-bloque"><label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="iglesias" checked onchange="filtrar()"> Iglesias y Capillas</label></div></details>
-        <details class="bloque-manos"><summary>Manos que Crean <span>▼</span></summary><div class="contenido-bloque"><label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="artesanos" checked onchange="filtrar()"> Talleres de Artesanos</label></div></details>
-        <details class="bloque-sabores"><summary>Sabores de Nuestra Tierra <span>▼</span></summary><div class="contenido-bloque"><label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fondas" checked onchange="filtrar()"> Fondas y Cocinas</label></div></details>
-        <details class="bloque-fiestas"><summary>Expresiones y Leyendas <span>▼</span></summary><div class="contenido-bloque"><label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="fiestas" checked onchange="filtrar()"> Festividades Populares</label></div></details>
-        <details class="bloque-encuentro"><summary>Espacios de Encuentro <span>▼</span></summary><div class="contenido-bloque"><label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="parques" checked onchange="filtrar()"> Parques y Miradores</label></div></details>
-        <details class="bloque-secretos"><summary>Secretos de nuestra Tierra <span>▼</span></summary><div class="contenido-bloque"><label class="item-leyenda"><input type="checkbox" class="filtro" data-cat="secretos" checked onchange="filtrar()"> Ver Curiosidades</label></div></details>
+        <div class="tip-container">
+            <strong>💡 Tip:</strong> Presiona cualquier lugar del mapa para ver los detalles.
+        </div>
+        
+        <div class="cat-box" style="background:#2c3e50;">Patrimonio Histórico ▼</div>
+        <div class="cat-box" style="background:#27ae60;">Manos que Crean ▼</div>
+        <div class="cat-box" style="background:#e67e22;">Sabores de Nuestra Tierra ▼</div>
+        <div class="cat-box" style="background:#880e4f;">Expresiones y Leyendas ▼</div>
+        <div class="cat-box" style="background:#2980b9;">Espacios de Encuentro ▼</div>
+        <div class="cat-box" style="background:#f1c40f; color:#333;">Secretos de nuestra Tierra ▼</div>
 
-        <div id="formulario">
-            <h3>Sugerir lugar:</h3>
-            <form action="https://formspree.io/f/TU_CODIGO_AQUI" method="POST">
+        <div class="form-area">
+            <h3>Sugerir nuevo punto</h3>
+            <form action="https://formspree.io/f/TU_CODIGO_AQUI" method="POST" enctype="multipart/form-data">
                 <input type="text" name="nombre" placeholder="Nombre del lugar" required>
-                <input type="email" name="email" placeholder="Tu correo" required>
-                <textarea name="descripcion" placeholder="Descripción..." required></textarea>
-                <button type="submit" style="width:100%; padding:10px; background:#2c3e50; color:white; border:none; border-radius:5px;">Enviar</button>
+                <textarea name="desc" placeholder="Descripción..." rows="2" required></textarea>
+                <input type="file" name="foto" accept="image/*">
+                <button type="submit">Enviar sugerencia</button>
             </form>
         </div>
     </div>
     <div id="mapa"></div>
 </div>
 
-<div id="modal-detalle"><div class="modal-contenido" id="modal-interno"></div></div>
+<div id="modal" onclick="this.style.display='none'">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div id="modal-body"></div>
+        <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:15px; padding:10px 20px; cursor:pointer;">Cerrar</button>
+    </div>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    const map = L.map('mapa').setView([8.0, -80.4], 9);
+    const map = L.map('mapa').setView([7.83, -80.40], 11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    const grupos = { iglesias: L.layerGroup().addTo(map), artesanos: L.layerGroup().addTo(map), fondas: L.layerGroup().addTo(map), fiestas: L.layerGroup().addTo(map), parques: L.layerGroup().addTo(map), secretos: L.layerGroup().addTo(map) };
-
-    function agregarPunto(lat, lng, titulo, img, texto, cat) {
-        L.marker([lat, lng]).addTo(grupos[cat]).on('click', () => {
-            document.getElementById('modal-interno').innerHTML = `
-                <img src="${img}" style="width:100%; border-radius:15px; margin-bottom:15px;">
-                <h2 style="font-family:'Playfair Display'; color:#2c3e50;">${titulo}</h2>
-                <p style="text-align:justify; line-height:1.6;">${texto}</p>
-                <button onclick="document.getElementById('modal-detalle').style.display='none'" style="padding:10px 25px; background:#2c3e50; color:white; border:none; border-radius:20px;">Cerrar</button>
-            `;
-            document.getElementById('modal-detalle').style.display = 'flex';
-        });
+    function abrirInfo(titulo, img, texto) {
+        document.getElementById('modal-body').innerHTML = `
+            <img src="${img}" style="width:100%; border-radius:10px; margin-bottom:15px;">
+            <h2 style="font-family:'Playfair Display';">${titulo}</h2>
+            <p style="font-size:14px; text-align:justify; line-height:1.6;">${texto}</p>
+        `;
+        document.getElementById('modal').style.display = 'flex';
     }
 
-    agregarPunto(7.8357, -80.3964, 'Semana del Campesino en Agua Buena', 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.', 'fiestas');
-    
-    agregarPunto(7.9, -80.4, 'El Sombrero Pintao', 'https://i.postimg.cc/vHDffyq2/sombrero-pintao.jpg', '¿Sabías que un sombrero pintado de alta calidad puede tomar entre 3 y 6 meses de trabajo manual? Esta artesanía tradicional panameña se elabora con fibras naturales de bellota, que son cuidadosamente seleccionadas, secadas, teñidas y tejidas a mano. Los diseños oscuros característicos se obtienen mediante tintes naturales extraídos de plantas y cortezas. Mientras más fino y apretado sea el tejido, mayor será el tiempo de elaboración y el valor de la pieza. Cada sombrero representa cientos de horas de trabajo y conocimientos transmitidos de generación en generación por los artesanos panameños. Esta pieza no solo es un accesorio, es un símbolo de identidad nacional que ha sido reconocido por su valor histórico y cultural.', 'secretos');
+    // Semana del Campesino
+    L.marker([7.8357, -80.3964]).addTo(map).on('click', () => abrirInfo(
+        'Semana del Campesino en Agua Buena', 
+        'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 
+        'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.'
+    ));
 
-    function filtrar() {
-        document.querySelectorAll('.filtro').forEach(c => {
-            if (c.checked) map.addLayer(grupos[c.dataset.cat]);
-            else map.removeLayer(grupos[c.dataset.cat]);
-        });
-    }
+    // Sombrero Pintao
+    L.marker([7.9000, -80.4000]).addTo(map).on('click', () => abrirInfo(
+        'El Sombrero Pintao', 
+        'https://i.postimg.cc/vHDffyq2/sombrero-pintao.jpg', 
+        '¿Sabías que un sombrero pintado de alta calidad puede tomar entre 3 y 6 meses de trabajo manual? Esta artesanía tradicional panameña se elabora con fibras naturales de bellota, que son cuidadosamente seleccionadas, secadas, teñidas y tejidas a mano. Los diseños oscuros característicos se obtienen mediante tintes naturales extraídos de plantas y cortezas. Mientras más fino y apretado sea el tejido, mayor será el tiempo de elaboración y el valor de la pieza. Cada sombrero representa cientos de horas de trabajo y conocimientos transmitidos de generación en generación por los artesanos panameños. Esta pieza no solo es un accesorio, es un símbolo de identidad nacional que ha sido reconocido por su valor histórico y cultural.'
+    ));
 </script>
 </body>
 </html>
