@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herencia Viva - Mapa Cultural</title>
+    <title>Mapa Cultural de Panamá</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <style>
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #f4f7f6; }
-        .container { max-width: 600px; margin: auto; padding: 10px; }
+        .container { max-width: 600px; margin: auto; padding: 15px; }
         h1 { color: #1d3557; margin: 10px 0 0; }
         .eslogan { color: #666; font-size: 14px; margin-bottom: 10px; }
         .tip { background: #fff3cd; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; border-left: 4px solid #ffeeba; }
@@ -18,7 +18,6 @@
         
         #mapa { height: 400px; border: 5px solid white; border-radius: 18px; margin-top: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         
-        /* Modal Estilo Post */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; padding: 10px; }
         .post-card { background: white; width: 100%; max-width: 500px; max-height: 90vh; border-radius: 20px; overflow-y: auto; display: flex; flex-direction: column; }
         .post-card img { width: 100%; height: 250px; object-fit: cover; border-radius: 20px 20px 0 0; }
@@ -30,29 +29,59 @@
 <body>
 
 <div class="container">
-    <h1>Herencia Viva</h1>
+    <h1>Mapa Cultural de Panamá</h1>
     <div class="eslogan">Nuestras raíces a un toque de distancia.</div>
-    <div class="tip">💡 Tip: Haz click en cualquier punto del mapa para sugerir una nueva ubicación.</div>
+    <div class="tip">💡 Haz click en el mapa para sugerir una nueva ubicación.</div>
 
-    <details><summary style="background:#C2185B;">Expresiones y Leyendas <span>▼</span></summary>
+    <!-- Categorías -->
+    <details><summary style="background:#2c3e50;">Patrimonio Histórico <span>▼</span></summary>
         <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Festividades" checked> Festividades</label>
+            <label><input type="checkbox" class="filtro" data-cat="Iglesias" checked> Iglesias</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="Sitios históricos" checked> Sitios históricos</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="Monumentos" checked> Monumentos</label>
         </div>
     </details>
-    <details><summary style="background:#23904C;">Manos que Crean <span>▼</span></summary>
+
+    <details><summary style="background:#27ae60;">Manos que Crean <span>▼</span></summary>
         <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Talleres de artesanía" checked> Talleres de artesanía</label>
+            <label><input type="checkbox" class="filtro" data-cat="Talleres de artesanías" checked> Talleres de artesanías</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="Confección de tramos típicos" checked> Confección de tramos típicos</label>
         </div>
     </details>
-    <details><summary style="background:#2980B9;">Espacios de Encuentro <span>▼</span></summary>
+
+    <details><summary style="background:#e67e22;">Sabores de Nuestra Tierra <span>▼</span></summary>
         <div class="subcat-list">
-            <label><input type="checkbox" class="filtro" data-cat="Parques" checked> Parques</label>
+            <label><input type="checkbox" class="filtro" data-cat="Fondas tradicionales" checked> Fondas tradicionales</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="Comida típica" checked> Comida típica</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="Postres artesanales" checked> Postres artesanales</label>
+        </div>
+    </details>
+
+    <details><summary style="background:#880e4f;">Expresiones y Leyendas <span>▼</span></summary>
+        <div class="subcat-list">
+            <label><input type="checkbox" class="filtro" data-cat="Festividades" checked> Festividades</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="Mitos y leyendas locales" checked> Mitos y leyendas locales</label>
+        </div>
+    </details>
+
+    <details><summary style="background:#2980b9;">Espacios de Encuentro <span>▼</span></summary>
+        <div class="subcat-list">
+            <label><input type="checkbox" class="filtro" data-cat="Plazas" checked> Plazas</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="Parques culturales" checked> Parques culturales</label><br>
+            <label><input type="checkbox" class="filtro" data-cat="Centros comunitarios" checked> Centros comunitarios</label>
+        </div>
+    </details>
+
+    <details><summary style="background:#f1c40f;">Secretos de la Tierra <span>▼</span></summary>
+        <div class="subcat-list">
+            <label><input type="checkbox" class="filtro" data-cat="Datos interesantes" checked> Datos interesantes</label>
         </div>
     </details>
 
     <div id="mapa"></div>
 </div>
 
+<!-- Modal Formulario -->
 <div id="formulario" class="modal">
     <div class="post-card">
         <div class="post-content">
@@ -68,6 +97,7 @@
     </div>
 </div>
 
+<!-- Modal Info Post -->
 <div id="info-modal" class="modal">
     <div class="post-card">
         <div id="post-data"></div>
@@ -80,23 +110,41 @@
     const map = L.map('mapa').setView([7.8357, -80.3964], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    const puntos = [
-        { 
-            lat: 7.8357, lng: -80.3964, cat: 'Festividades', nombre: 'Semana del Campesino en Agua Buena', color: '#C2185B', 
-            img: 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 
-            desc: 'Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres.' 
-        },
-        { 
-            lat: 7.9, lng: -80.4, cat: 'Talleres de artesanía', nombre: 'El Sombrero Pintao', color: '#23904C', 
-            img: 'https://i.postimg.cc/vHDffyq2/sombrero-pintao.jpg', 
-            desc: '¿Sabías que un sombrero pintado de alta calidad puede tomar entre 3 y 6 meses de trabajo manual? Esta artesanía tradicional panameña se elabora con fibras naturales de bellota, que son cuidadosamente seleccionadas, secadas, teñidas y tejidas a mano. Los diseños oscuros característicos se obtienen mediante tintes naturales extraídos de plantas y cortezas. Mientras más fino y apretado sea el tejido, mayor será el tiempo de elaboración y el valor de la pieza. Cada sombrero representa cientos de horas de trabajo y conocimientos transmitidos de generación en generación por los artesanos panameños. Esta pieza no solo es un accesorio, es un símbolo de identidad nacional que ha sido reconocido por su valor histórico y cultural.<br><br><b>Fuente:</b> UNESCO, Patrimonio Cultural Inmaterial.' 
-        },
-        { 
-            lat: 7.9715, lng: -80.4290, cat: 'Parques', nombre: 'Parque Belisario Porras', color: '#2980B9', 
-            img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Las_Tableras_Panama.jpg/640px-Las_Tableras_Panama.jpg', 
-            desc: 'Espacio emblemático utilizado para actividades culturales y comunitarias en el corazón de nuestra región.' 
-        }
-    ];
+const puntos = [
+    { 
+        lat: 7.8357, lng: -80.3964, cat: 'Festividades', nombre: 'Semana del Campesino en Agua Buena', color: '#880e4f', 
+        img: 'https://i.postimg.cc/vm2w86Ds/images-(1).jpg', 
+        desc: `
+            <p>Esta es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica.</p>
+            <p>Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año.</p>
+            <h3>Elementos de nuestra identidad</h3>
+            <p>Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito.</p>
+            <h3>Gastronomía</h3>
+            <p>Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta.</p>
+        ` 
+    },
+    { 
+        lat: 7.9, lng: -80.4, cat: 'Talleres de artesanías', nombre: 'El Sombrero Pintao', color: '#27ae60', 
+        img: 'https://i.postimg.cc/vHDffyq2/sombrero-pintao.jpg', 
+        desc: `
+            <p>¿Sabías que un sombrero pintado de alta calidad puede tomar entre 3 y 6 meses de trabajo manual? Esta artesanía tradicional panameña se elabora con fibras naturales de bellota, que son cuidadosamente seleccionadas, secadas, teñidas y tejidas a mano.</p>
+            <p>Los diseños oscuros característicos se obtienen mediante tintes naturales extraídos de plantas y cortezas. Mientras más fino y apretado sea el tejido, mayor será el tiempo de elaboración y el valor de la pieza.</p>
+            <p>Esta pieza no solo es un accesorio, es un símbolo de identidad nacional.</p>
+        ` 
+    },
+    { 
+        lat: 7.766676153095528, lng: -80.27775169145308, cat: 'Parques culturales', nombre: 'Parque Porras', color: '#2980b9', 
+        img: 'https://i.postimg.cc/X7XD2p7d/parqueporraslt.png', 
+        desc: `
+            <p>El Parque Porras, ubicado en el distrito de Las Tablas, provincia de Los Santos, es uno de los espacios públicos más emblemáticos del país. Su nombre honra al expresidente panameño Belisario Porras Barahona, originario de la región.</p>
+            <h3>Historia y evolución</h3>
+            <p>El parque fue inaugurado alrededor de 1915, como parte del desarrollo urbano de la ciudad tableña, convirtiéndose desde entonces en un punto central de encuentro social y cultural.</p>
+            <p>Ha funcionado como lugar de reuniones, tertulias y actividades culturales, destacando su rol esencial durante las celebraciones del Carnaval tableño.</p>
+            <h3>Restauración y legado</h3>
+            <p>El parque ha pasado por varias remodelaciones, destacando una gran restauración en 2010. Hoy en día, también alberga el Museo Belisario Porras, que conserva documentos y memoria histórica de su legado en Panamá.</p>
+        ` 
+    }
+];
 
     map.on('click', (e) => {
         document.getElementById('formulario').style.display = 'flex';
@@ -104,14 +152,13 @@
     });
 
     function actualizarMapa() {
-        // Limpiar marcadores existentes
         map.eachLayer((layer) => { if (layer instanceof L.CircleMarker) map.removeLayer(layer); });
-
         puntos.forEach(p => {
             const checkbox = document.querySelector(`[data-cat="${p.cat}"]`);
             if (checkbox && checkbox.checked) {
                 L.circleMarker([p.lat, p.lng], {color: p.color, radius: 8}).addTo(map)
-                 .on('click', () => {
+                 .on('click', (e) => {
+                     L.DomEvent.stopPropagation(e);
                      document.getElementById('info-modal').style.display = 'flex';
                      document.getElementById('post-data').innerHTML = `
                          <img src="${p.img}">
