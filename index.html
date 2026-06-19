@@ -102,13 +102,18 @@
 <div id="formulario" class="modal">
     <div class="post-card">
         <div class="post-content">
-            <h2>Sugerir sitio cultural</h2>
-            <form action="https://formspree.io/f/b8fbb405a3bce986fe67732366390e27" method="POST">
-                <input type="text" name="nombre" placeholder="Nombre del sitio" required style="width:100%; padding:10px; margin:5px 0;">
-                <input id="coords" name="coordenadas" readonly style="width:100%; padding:10px; margin:5px 0;">
-                <textarea name="descripcion" placeholder="Descripción" required style="width:100%; padding:10px; margin:5px 0;"></textarea>
-                <button type="submit" style="width:100%; padding:12px; background:#1d3557; color:white; border:none; border-radius:8px;">Enviar sugerencia</button>
-            </form>
+            <h2>Sugerir nueva ubicación</h2>
+      <form action="https://formspree.io/f/b8fbb405a3bce986fe67732366390e27" method="POST" enctype="multipart/form-data">
+    <input type="text" name="nombre" placeholder="Nombre del sitio" required style="width:100%; padding:10px; margin:5px 0;">
+    <input id="coords" name="coordenadas" readonly style="width:100%; padding:10px; margin:5px 0;">
+    <textarea name="descripcion" placeholder="Descripción" required style="width:100%; padding:10px; margin:5px 0;"></textarea>
+    
+    <!-- Nuevo campo para subir fotos -->
+    <label style="font-size: 12px; color: #555;">Subir foto del sitio:</label>
+    <input type="file" name="foto" accept="image/*" style="width:100%; margin:5px 0;">
+    
+    <button type="submit" style="width:100%; padding:12px; background:#1d3557; color:white; border:none; border-radius:8px;">Enviar sugerencia</button>
+</form>
         </div>
         <button class="close-btn" onclick="document.getElementById('formulario').style.display='none'">Cerrar</button>
     </div>
