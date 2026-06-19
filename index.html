@@ -14,50 +14,104 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family:'Segoe UI', Arial, sans-serif;
 }
 
 body{
-    background:#f4f6f9;
+    background:#eef2f7;
 }
 
 #contenedor{
     display:flex;
     height:100vh;
+    gap:20px;
+    padding:20px;
 }
 
 #sidebar{
-    width:360px;
+    width:380px;
     background:white;
-    padding:20px;
+    border-radius:25px;
+    padding:25px;
     overflow-y:auto;
-    border-right:1px solid #ddd;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
 #sidebar h1{
-    color:#2c3e50;
+    color:#22354b;
+    font-size:32px;
     margin-bottom:5px;
 }
 
 .subtitulo{
-    color:#666;
-    margin-bottom:15px;
+    color:#6d7a89;
+    margin-bottom:20px;
+    font-size:15px;
 }
 
 .stats{
-    background:#f8f9fa;
-    border-radius:12px;
-    padding:12px;
-    margin-bottom:15px;
-    border:1px solid #ddd;
+    background:linear-gradient(135deg,#22354b,#3f6388);
+    color:white;
+    border:none;
+    border-radius:18px;
+    padding:15px;
+    margin-bottom:20px;
 }
 
-.cat-item{
+#sidebar p{
+    color:#555;
+    line-height:1.5;
+}
+
+details{
     margin-bottom:12px;
-    padding:12px;
-    border-radius:10px;
-    border:1px solid #ddd;
+}
+
+summary{
+    cursor:pointer;
+    color:white;
+    padding:16px;
+    border-radius:16px;
+    font-weight:600;
+    list-style:none;
+}
+
+details:nth-of-type(1) summary{
+    background:#1f567d;
+}
+
+details:nth-of-type(2) summary{
+    background:#23904c;
+}
+
+details:nth-of-type(3) summary{
+    background:#d86200;
+}
+
+details:nth-of-type(4) summary{
+    background:#c2185b;
+}
+
+details:nth-of-type(5) summary{
+    background:#2980b9;
+}
+
+details:nth-of-type(6) summary{
+    background:#d4a017;
+}
+
+.subcat{
     background:white;
+    border:1px solid #e8e8e8;
+    border-top:none;
+    padding:15px;
+    border-radius:0 0 16px 16px;
+}
+
+.subcat label{
+    display:block;
+    margin-bottom:8px;
+    color:#444;
 }
 
 .dot{
@@ -66,31 +120,32 @@ body{
     display:inline-block;
     border-radius:50%;
     margin-right:8px;
+    background:white;
 }
 
-details{
-    margin-bottom:10px;
+.leyenda{
+    margin-top:20px;
+    background:#f8fafc;
+    padding:18px;
+    border-radius:18px;
+    border:1px solid #e7edf5;
 }
 
-summary{
-    cursor:pointer;
-    font-weight:bold;
-    padding:10px;
-    border-radius:10px;
-    background:#f8f9fa;
+.leyenda h3{
+    margin-bottom:12px;
+    color:#22354b;
 }
 
-.subcat{
-    margin-left:20px;
-    margin-top:8px;
+.leyenda div{
+    margin-bottom:8px;
 }
 
 #mapa{
-    flex-grow:1;
-    margin:15px;
-    border-radius:20px;
+    flex:1;
+    border-radius:25px;
     overflow:hidden;
-    box-shadow:0 0 15px rgba(0,0,0,.15);
+    border:10px solid white;
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
 }
 
 #modal,
@@ -110,8 +165,8 @@ summary{
 .modal-content{
     background:white;
     width:90%;
-    max-width:600px;
-    border-radius:15px;
+    max-width:650px;
+    border-radius:20px;
     padding:25px;
     max-height:85vh;
     overflow-y:auto;
@@ -119,7 +174,7 @@ summary{
 
 .modal-content img{
     width:100%;
-    border-radius:10px;
+    border-radius:12px;
     margin-bottom:15px;
 }
 
@@ -127,56 +182,46 @@ input,
 select,
 textarea{
     width:100%;
-    padding:10px;
-    margin-bottom:10px;
-    border-radius:8px;
-    border:1px solid #ccc;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #d6d6d6;
+    margin-bottom:12px;
 }
 
 button{
     padding:12px;
     border:none;
-    border-radius:8px;
+    border-radius:10px;
     cursor:pointer;
 }
 
 .btn{
     width:100%;
-    background:#2c3e50;
+    background:#22354b;
     color:white;
 }
 
 .cerrar{
-    margin-top:10px;
     width:100%;
-}
-
-.leyenda{
-    margin-top:15px;
-    padding:10px;
-    border-radius:10px;
-    background:#f8f9fa;
-}
-
-.leyenda div{
-    margin-bottom:6px;
+    margin-top:10px;
+    background:#e9ecef;
 }
 
 @media(max-width:768px){
 
     #contenedor{
         flex-direction:column;
+        padding:10px;
+        gap:10px;
     }
 
     #sidebar{
         width:100%;
-        height:45%;
+        height:auto;
     }
 
     #mapa{
-        height:55%;
-        margin:0;
-        border-radius:0;
+        height:500px;
     }
 
 }
@@ -190,7 +235,7 @@ button{
 <div id="sidebar">
 
 <h1>Mapa Cultural de Panamá</h1>
-<p class="subtitulo">🌎 Nuestras raíces a un toque de distancia</p>
+<p class="subtitulo">Nuestras raíces a un toque de distancia</p>
 
 <div class="stats">
 <b>Sitios registrados:</b>
@@ -198,7 +243,7 @@ button{
 </div>
 
 <p style="margin-bottom:15px;">
-💡 Haz clic en cualquier lugar del mapa para sugerir un nuevo sitio cultural.
+💡 Tip:Haz clic en cualquier lugar del mapa para sugerir un nuevo sitio cultural.
 </p>
 
 <details open>
@@ -459,7 +504,7 @@ radius:8
 .on("click",()=>mostrarModal(
 "Semana del Campesino en Agua Buena",
 "https://i.postimg.cc/vm2w86Ds/images-(1).jpg",
-"Celebración tradicional donde la comunidad honra sus costumbres mediante tamboritos, carretas decoradas, gastronomía típica, polleras y actividades culturales que fortalecen la identidad local."
+"Es una celebración donde nuestra comunidad se une para rendir homenaje a nuestras tradiciones, reflejando el orgullo por nuestra cultura a través de la vestimenta típica. Un momento muy especial es la presentación de la nueva reina, quien toma el lugar de la reina saliente para representar a nuestra comunidad durante todo el año. Es característico ver las carretas decoradas con elementos de nuestra identidad, como totumas, instrumentos musicales, bateas y churucas, mientras las empolleradas y la reina bailan al ritmo del tamborito. Además, compartimos una rica gastronomía con delicias como cocadas, cocaditas, rosquetes, yuca, chicharrones y chicha de junta. Esta fiesta es el espacio donde todo el pueblo se reúne para celebrar el legado que nos llena de orgullo y mantiene vivas nuestras costumbres."
 ));
 
 
@@ -478,7 +523,7 @@ radius:8
 .on("click",()=>mostrarModal(
 "El Sombrero Pintao",
 "https://i.postimg.cc/vHDffyq2/sombrero-pintao.jpg",
-"Una de las artesanías más representativas de Panamá. Su elaboración puede tomar entre 3 y 6 meses y requiere técnicas transmitidas de generación en generación."
+"¿Sabías que un sombrero pintado de alta calidad puede tomar entre 3 y 6 meses de trabajo manual? Esta artesanía tradicional panameña se elabora con fibras naturales de bellota, que son cuidadosamente seleccionadas, secadas, teñidas y tejidas a mano. Los diseños oscuros característicos se obtienen mediante tintes naturales extraídos de plantas y cortezas. Mientras más fino y apretado sea el tejido, mayor será el tiempo de elaboración y el valor de la pieza. Cada sombrero representa cientos de horas de trabajo y conocimientos transmitidos de generación en generación por los artesanos panameños. Esta pieza no solo es un accesorio, es un símbolo de identidad nacional que ha sido reconocido por su valor histórico y cultural.                                                   Fuentes: • UNESCO. El tejido tradicional del sombrero pintado como Patrimonio Cultural Inmaterial de la Humanidad. • Ministerio de Cultura de Panamá (MiCultura). • Centro de Estudios y Acción Social Panameño (CEASPA)."
 ));
 
 
